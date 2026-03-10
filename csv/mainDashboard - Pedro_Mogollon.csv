@@ -1,0 +1,11 @@
+Monto del credito:,"$8,000,000.00",,n,Pago Interes,Pago Capital,Pago cuota,Saldo,Rem,Pago,Origin,Trx. #,Fecha,Month,OnTime
+Tasa de interes (2 anos):,24%,,Ene-26,"$146,669.00",$ -,"$146,669.00","$8,000,000.00",$31.00,"$146,700.00",,,Ene-26,Ene-26,TRUE
+Tasa mensual:,1.96%,,Feb-26,"$146,669.00",$ -,"$146,669.00","$8,000,000.00",,,,,,Feb-26,FALSE
+Numero de pagos (mensuales):,36,,Mar-26,"$146,669.00","$4,000,000.00","$4,146,669.00","$4,000,000.00",,,,,,Mar-26,FALSE
+Pago (Fijo):,,,Apr-26,"$73,334.00",$ -,"$73,334.00","$4,000,000.00",,,,,,Apr-26,FALSE
+Ajuste Cuota:,0,,May-26,"$73,334.00",$ -,"$73,334.00","$4,000,000.00",,,,,,May-26,FALSE
+Payed,"$146,700.00",,Jun-26,"$73,334.00","$4,000,000.00","$4,073,334.00",$ -,,,,,,Jun-26,FALSE
+Remaining,"$8,513,340.00",,,,,,,,,,,,,
+Start Date,Jan-26,,,,,,,,,,,,,
+End Date,Apr-28,,,,,,,,,,,,,
+PayBack,"$146,700.00",,,,,,,,,,,,,
