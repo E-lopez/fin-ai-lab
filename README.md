@@ -23,11 +23,17 @@ The system is designed to evolve into a modular AI-enabled recovery pipeline wit
 ## Architecture
 
 Frontend (Dashboard)
+
         ↓
+
 FastAPI Backend
+
         ↓
+
 Supabase PostgreSQL
+
         ↓
+
 AI Escalation Module (planned)
 
 Core responsibilities:
@@ -75,6 +81,32 @@ The goal is to design an AI-ready financial workflow system, not just integrate 
 ## Running Locally
 
 ### 1. Apply Migrations
+
+from fin-ai-lab/scripts/migrations
+```source venv/bin/activate```
+
+```export DOPPLER_TOKEN=dp.st.prd.WHQ...```
+
+Migrate borrowers table:
+```python run_borrowers_migration.py```
+
+Migrate loans table:
+```python run_loans_migration.py```
+
+Migrate loan schedules:
+```python run_loan_schedulle_migration.py```
+
+Migrate payments table:
+```python run_payments_migration.py```
+
+Migrate payments allocation table:
+```python run_payments_allocation_migration.py```
+
+Test migrations:
+```
+        python test_data_quality.py
+        python test_allocation_quality.py
+```
 
 ### 2. Start Backend
 
