@@ -83,24 +83,38 @@ The goal is to design an AI-ready financial workflow system, not just integrate 
 ### 1. Apply Migrations
 
 from fin-ai-lab/scripts/migrations
-```source venv/bin/activate```
+```
+        source venv/bin/activate
+```
 
-```export DOPPLER_TOKEN=dp.st.prd.WHQ...```
+```
+        export DOPPLER_TOKEN=dp.st.prd.WHQ...
+```
 
 Migrate borrowers table:
-```python run_borrowers_migration.py```
+```
+        python run_borrowers_migration.py
+```
 
 Migrate loans table:
-```python run_loans_migration.py```
+```
+        python run_loans_migration.py
+```
 
 Migrate loan schedules:
-```python run_loan_schedulle_migration.py```
+```
+        python run_loan_schedulle_migration.py
+```
 
 Migrate payments table:
-```python run_payments_migration.py```
+```
+        python run_payments_migration.py
+```
 
 Migrate payments allocation table:
-```python run_payments_allocation_migration.py```
+```
+        python run_payments_allocation_migration.py
+```
 
 Test migrations:
 ```
