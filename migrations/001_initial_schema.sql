@@ -21,7 +21,7 @@ CREATE TABLE loans (
   payment_frequency VARCHAR(20) NOT NULL, -- monthly, quarterly, maturity
   term_months INT NOT NULL,
   start_date DATE NOT NULL,
-  status VARCHAR(20) DEFAULT 'active',
+  status VARCHAR(20) DEFAULT 'active', -- late, default, finished
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

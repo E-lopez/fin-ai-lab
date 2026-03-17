@@ -1,0 +1,7 @@
+fastapi[standard]
+sqlmodel
+requests
+psycopg2-binary
+pytest
+pytest-cov
+httpx
