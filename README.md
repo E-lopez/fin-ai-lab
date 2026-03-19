@@ -88,6 +88,10 @@ from fin-ai-lab/scripts/migrations
 ```
 
 ```
+        python3 -m pip install -r requirements.txt
+```
+
+```
         export DOPPLER_TOKEN=dp.st.prd.WHQ...
 ```
 
@@ -103,7 +107,7 @@ Migrate loans table:
 
 Migrate loan schedules:
 ```
-        python run_loan_schedulle_migration.py
+        python run_loan_schedule_migration.py
 ```
 
 Migrate payments table:
@@ -113,7 +117,7 @@ Migrate payments table:
 
 Migrate payments allocation table:
 ```
-        python run_payments_allocation_migration.py
+        python run_payments_allocations_migration.py
 ```
 
 Test migrations:
