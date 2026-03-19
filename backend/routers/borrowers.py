@@ -1,7 +1,7 @@
 from typing import Annotated, Optional
-from backend.constants.HTTP_messages import HTTP_MESSAGES
+from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlmodel import Session, select, or_
+from sqlmodel import Session, select, or_, func
 from uuid import UUID
 from decimal import Decimal
 from datetime import date
@@ -18,7 +18,6 @@ router = APIRouter(
   tags=["borrowers"],
   responses={404: {"description": "Not found"}},
 )
-
 
 @router.get("/", response_model=list[BorrowerRead])
 async def read_borrowers(
@@ -82,9 +81,9 @@ async def get_borrower_summary(
             )
             allocations = session.exec(allocation_statement).all()
             
-            allocated_principal = sum(a.allocated_principal for a in allocations)
-            allocated_interest = sum(a.allocated_interest for a in allocations)
-            allocated_fees = sum(a.allocated_fees for a in allocations)
+            allocated_principal = func.sum(a.allocated_principal for a in allocations)
+            allocated_interest = func.sum(a.allocated_interest for a in allocations)
+            allocated_fees = func.sum(a.allocated_fees for a in allocations)
             
             remaining_principal = calculate_remaining_balance(schedule.scheduled_principal, allocated_principal)
             remaining_interest = calculate_remaining_interest(schedule.scheduled_interest, allocated_interest)
@@ -96,83 +95,63 @@ async def get_borrower_summary(
         "borrower_id": borrower_id,
         "total_debt": total_debt,
         "number_of_active_loans": len(active_loans),
-        "overall_standing": "good" if total_debt > 0 else "clear"
+        "overall_standing": "active" if total_debt > 0 else "clear"
     }
 
+
 @router.get(
-        "/{borrower_id}/next-payment",
-        responses={
-            200: {"description": "Next payment retrieved successfully"},
-            404: {"description": HTTP_MESSAGES["BORROWER_NOT_FOUND"]}
-        })
-async def get_borrower_next_payment(
+    "/{borrower_id}/next-payment",
+    responses={
+        200: {"description": "Next payment retrieved successfully"},
+        404: {"description": HTTP_MESSAGES["BORROWER_NOT_FOUND"]}}
+)
+async def get_next_payment(
     borrower_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
-    borrower = session.get(Borrower, borrower_id)
-    if not borrower:
-        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["BORROWER_NOT_FOUND"])
+    # 1. Join Schedule to Loans to filter by borrower
+    # 2. Sort by due_date to find the 'next' chronological requirement
+    # 3. Subquery approach to check for 'unpaid' status
     
-    loans_statement = select(Loan).where(
-        Loan.borrower_id == borrower_id,
-        Loan.status == "active"
+    statement = (
+        select(LoanSchedule)
+        .join(Loan)
+        .where(
+            Loan.borrower_id == borrower_id,
+            Loan.status == "active"
+        )
+        .order_by(LoanSchedule.due_date.asc())
     )
-    active_loans = session.exec(loans_statement).all()
     
-    if not active_loans:
-        return {
-            "borrower_id": borrower_id,
-            "amount": 0,
-            "due_date": None,
-            "message": "No active loans"
-        }
+    # Iterate until we find the first one that isn't fully paid
+    all_upcoming = session.exec(statement).all()
     
-    today = date.today()
-    
-    earliest_payment = None
-    earliest_due_date = None
-    
-    for loan in active_loans:
-        schedule_statement = select(LoanSchedule).where(
-            LoanSchedule.loan_id == loan.id,
-            LoanSchedule.due_date >= today
-        ).order_by(LoanSchedule.due_date)
+    for schedule in all_upcoming:
+        # Get total paid for this specific period
+        print(schedule.id, schedule.loan_id)
+        paid_data = session.exec(
+            select(
+                func.sum(PaymentAllocation.allocated_principal + 
+                    PaymentAllocation.allocated_interest + 
+                    PaymentAllocation.allocated_fees)
+            ).where(PaymentAllocation.schedule_id == schedule.id)
+        ).first()
         
-        next_schedule = session.exec(schedule_statement).first()
+        total_paid = paid_data or 0
+        total_scheduled = (schedule.scheduled_principal + 
+                           schedule.scheduled_interest + 
+                           schedule.scheduled_fees)
         
-        if next_schedule:
-            if earliest_due_date is None or next_schedule.due_date < earliest_due_date:
-                allocation_statement = select(PaymentAllocation).where(
-                    PaymentAllocation.schedule_id == next_schedule.id
-                )
-                allocations = session.exec(allocation_statement).all()
-                
-                allocated_principal = sum(a.allocated_principal for a in allocations)
-                allocated_interest = sum(a.allocated_interest for a in allocations)
-                allocated_fees = sum(a.allocated_fees for a in allocations)
-                
-                remaining_principal = calculate_remaining_balance(next_schedule.scheduled_principal, allocated_principal)
-                remaining_interest = calculate_remaining_interest(next_schedule.scheduled_interest, allocated_interest)
-                remaining_fees = calculate_remaining_fees(next_schedule.scheduled_fees, allocated_fees)
-                
-                payment_amount = calculate_total_balance(remaining_principal, remaining_interest, remaining_fees)
-                
-                earliest_payment = payment_amount
-                earliest_due_date = next_schedule.due_date
-    
-    if earliest_payment is None:
-        return {
-            "borrower_id": borrower_id,
-            "amount": 0,
-            "due_date": None,
-            "message": "No upcoming payments"
-        }
-    
-    return {
-        "borrower_id": borrower_id,
-        "amount": earliest_payment,
-        "due_date": earliest_due_date
-    }
+        if total_paid < total_scheduled:
+            return {
+                "schedule_id": schedule.id,
+                "due_date": schedule.due_date,
+                "amount_due": total_scheduled - total_paid,
+                "status": "overdue" if schedule.due_date < date.today() else "upcoming"
+            }
+            
+    return {"message": "All loans are fully paid or no active loans found."}
+
 
 @router.get(
         "/{borrower_id}", 
@@ -187,6 +166,7 @@ async def get_borrower_by_id(
     if not borrower:
         raise HTTPException(status_code=404, detail=HTTP_MESSAGES["BORROWER_NOT_FOUND"])
     return borrower
+
 
 @router.patch(
         "/{borrower_id}",
@@ -209,6 +189,7 @@ async def update_borrower(
     session.commit()
     session.refresh(borrower)
     return borrower
+
 
 @router.post("/", response_model=BorrowerRead)
 async def create_borrower(
