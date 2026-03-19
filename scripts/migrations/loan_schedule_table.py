@@ -14,15 +14,16 @@ def get_fee_from_dashboard(user_name, csv_dir, loan_suffix=''):
     
     for pattern in patterns:
         file_path = os.path.join(csv_dir, pattern)
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8-sig') as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    if len(row) > 1 and 'fee' in row[0].lower():
-                        fee_value = parse_amount(row[1])
-                        if fee_value > 0:
-                            return fee_value
-    return 0
+        if not os.path.exists(file_path): 
+            return 0
+        with open(file_path, 'r', encoding='utf-8-sig') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if len(row) > 1 and 'fee' in row[0].lower():
+                    fee_value = parse_amount(row[1])
+                    if fee_value > 0:
+                        return fee_value
+
 
 def process_loan_schedule():
     csv_dir = os.path.join(os.path.dirname(__file__), '../../csv')
@@ -71,7 +72,7 @@ def process_loan_schedule():
                         'due_date': parse_date(month, day=10),
                         'scheduled_principal': parse_amount(row.get('Pago Capital', '0')),
                         'scheduled_interest': parse_amount(row.get('Pago Interes', '0')),
-                        'scheduled_fees': fee_amount
+                        'scheduled_fees': fee_amount if period == 1 else 0
                     })
         
         user_schedules = [s for s in schedules if s['user_name'] == user_name and s['loan_suffix'] == loan_suffix]
