@@ -117,7 +117,7 @@ Migrate payments table:
 
 Migrate payments allocation table:
 ```
-        python run_payments_allocations_migration.py
+        python run_payment_allocations_migration.py
 ```
 
 Test migrations:
