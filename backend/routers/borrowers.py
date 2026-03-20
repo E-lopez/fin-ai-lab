@@ -117,7 +117,7 @@ async def get_next_payment(
             Loan.borrower_id == borrower_id,
             Loan.status == "active"
         )
-        .order_by(LoanSchedule.due_date.asc())
+        .order_by(LoanSchedule.due_date.asc(), LoanSchedule.period.asc())
     )
     
     all_schedules = session.exec(statement).all()
@@ -142,10 +142,13 @@ async def get_next_payment(
                            schedule.scheduled_interest + 
                            schedule.scheduled_fees)
         
+        print(f"Schedule {schedule.id} due {schedule.due_date}: scheduled={total_scheduled}, paid={paid_data}")
+        
         balance_for_period = total_scheduled - paid_data
 
-        if balance_for_period < 0:
+        if balance_for_period <= 0:
             continue
+
         # If this period is in the past or is today, add it to the total due
         if schedule.due_date <= today:
             total_catch_up_amount += balance_for_period
@@ -174,6 +177,7 @@ async def get_next_payment(
         }
             
     return {"message": "All loans are fully paid or no active loans found."}
+
 
 @router.get(
         "/{borrower_id}", 

@@ -18,7 +18,7 @@
 - borrowers
 Get all borrowers
 Get borrower summary: total debt, number of active loans, and overall standing
-Calculate borrower next payment info returns {amount,  due_date}
+Calculate borrower next payment info returns {amount, due_date}
 Update Borrower PATCH /borrowers/{id} 
 Search borrower by name, ID, orgName or email
 
