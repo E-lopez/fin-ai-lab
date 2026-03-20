@@ -71,6 +71,7 @@ async def get_borrower_summary(
     active_loans = session.exec(loans_statement).all()
     
     total_debt = Decimal(0)
+    total_paid = Decimal(0)
     for loan in active_loans:
         schedule_statement = select(LoanSchedule).where(LoanSchedule.loan_id == loan.id)
         schedules = session.exec(schedule_statement).all()
@@ -84,6 +85,8 @@ async def get_borrower_summary(
             allocated_principal = func.sum(a.allocated_principal for a in allocations)
             allocated_interest = func.sum(a.allocated_interest for a in allocations)
             allocated_fees = func.sum(a.allocated_fees for a in allocations)
+
+            total_paid += allocated_principal + allocated_interest + allocated_fees
             
             remaining_principal = calculate_remaining_balance(schedule.scheduled_principal, allocated_principal)
             remaining_interest = calculate_remaining_interest(schedule.scheduled_interest, allocated_interest)
@@ -94,6 +97,7 @@ async def get_borrower_summary(
     return {
         "borrower_id": borrower_id,
         "total_debt": total_debt,
+        "total_paid": total_paid,
         "number_of_active_loans": len(active_loans),
         "overall_standing": "active" if total_debt > 0 else "clear"
     }

@@ -11,6 +11,10 @@ BORROWER_IDS = [
     {"id": "1f9ae342-10a0-42ff-b43c-6f97c890b193", "name": "S_Guevara", "assertion": "active"},
     {"id": "7888a5ac-fae0-4696-a56e-31a7f205698e", "name": "A_Ramos", "assertion": "active"},
     {"id": "31be170b-085d-43c1-b8ee-5ad821adcbbb", "name": "H_Leon", "assertion": "active"},
+    {"id": "b5d5c843-e8a5-47b0-a0b7-40991ea55793", "name": "D_Cepeda", "assertion": "active"},
+    {"id": "0fe3e6a0-fa65-4cbf-87bd-cc254f944acd", "name": "T_Ariza", "assertion": "active"},
+    {"id": "0f140425-d07d-4d15-be55-36b7cc36dd16", "name": "N_Topaga", "assertion": "active"},
+    {"id": "5a6f60a6-f349-44e0-98a9-e7bd0e1a741f", "name": "P_Mogollon", "assertion": "active"},
 ]
 
 @pytest.mark.database
