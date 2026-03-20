@@ -39,7 +39,7 @@ def process_payment_allocations():
     
     try:
         # Get all payments ordered by date
-        payments = session.query(Payment).order_by(Payment.payment_date).limit(25).all()
+        payments = session.query(Payment).order_by(Payment.payment_date).all()
         
         for payment in payments:
             schedules = session.query(LoanSchedule).filter_by(
