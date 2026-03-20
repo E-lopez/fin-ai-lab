@@ -97,33 +97,33 @@ from fin-ai-lab/scripts/migrations
 
 Migrate borrowers table:
 ```
-        python run_borrowers_migration.py
+        python3 run_borrowers_migration.py
 ```
 
 Migrate loans table:
 ```
-        python run_loans_migration.py
+        python3 run_loans_migration.py
 ```
 
 Migrate loan schedules:
 ```
-        python run_loan_schedule_migration.py
+        python3 run_loan_schedule_migration.py
 ```
 
 Migrate payments table:
 ```
-        python run_payments_migration.py
+        python3 run_payments_migration.py
 ```
 
 Migrate payments allocation table:
 ```
-        python run_payment_allocations_migration.py
+        python3 run_payment_allocations_migration.py
 ```
 
 Test migrations:
 ```
-        python test_data_quality.py
-        python test_allocation_quality.py
+        python3 test_data_quality.py
+        python3 test_allocation_quality.py
 ```
 
 ### 2. Start Backend
