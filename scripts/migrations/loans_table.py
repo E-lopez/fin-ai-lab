@@ -1,4 +1,5 @@
 import csv
+from decimal import Decimal
 import json
 import os
 import re
@@ -19,9 +20,9 @@ def get_interest_rate(user_name, csv_dir, loan_suffix=''):
             with open(file_path, 'r', encoding='utf-8-sig') as f:
                 for line in f:
                     if 'Tasa de interes' in line:
-                        match = re.search(r'(\d+)%', line)
+                        match = re.search(r'([\d.]+)%', line)
                         if match:
-                            rate = float(match.group(1)) / 100
+                            rate = Decimal(match.group(1)) / Decimal('100')
                             print(f"{user_name}{loan_suffix}: interest_rate={rate}")
                             return rate
     print(f"{user_name}{loan_suffix}: No rate found, skipping")
