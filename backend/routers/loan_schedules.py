@@ -1,4 +1,6 @@
 from typing import Annotated
+from routers.loans import get_loan_by_id
+from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from uuid import UUID
@@ -9,6 +11,7 @@ from dependencies.db_client import get_session
 from schemas.Loan_schedule import LoanSchedule, LoanScheduleRead, LoanScheduleCreate
 from schemas.Payment_allocations import PaymentAllocation
 from schemas.Payments import Payment
+from functions.schedule_utils import scheduler
 from functions.date_utils import calculate_days_late
 from functions.financial_utils import calculate_remaining_balance, calculate_remaining_interest, calculate_remaining_fees
 
@@ -27,14 +30,17 @@ async def get_loan_schedule_by_loan_id(
     results = session.exec(statement).all()
     return results
 
-@router.get("/{schedule_id}", response_model=LoanScheduleRead)
+@router.get(
+        "/{schedule_id}",
+        response_model=LoanScheduleRead,
+        responses={404: {"description": HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_NOT_FOUND"]}})
 async def get_loan_schedule_by_id(
     schedule_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
     schedule = session.get(LoanSchedule, schedule_id)
     if not schedule:
-        raise HTTPException(status_code=404, detail="Loan schedule not found")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_NOT_FOUND"])
     return schedule
 
 @router.get("/loan/{loan_id}/late-days")
@@ -160,18 +166,31 @@ async def get_payment_progress(
         "progress_percentage": float((total_paid / total_scheduled * 100) if total_scheduled > 0 else 0)
     }
 
-@router.post("/", response_model=LoanScheduleRead)
+
+@router.post("/")
 async def create_loan_schedule(
-    schedule: LoanScheduleCreate,
+    loan_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
-    db_schedule = LoanSchedule(**schedule.model_dump())
-    session.add(db_schedule)
-    session.commit()
-    session.refresh(db_schedule)
-    return db_schedule
+    # db_schedule = LoanSchedule(**schedule.model_dump())
+    # session.add(db_schedule)
+    # session.commit()
+    # session.refresh(db_schedule)
+    # return db_schedule
+    loan = await get_loan_by_id(loan_id, session)
+    print(f"Generating schedule for loan: {loan}")
+    schedule = scheduler(loan.amortization_type)(loan)
+    print(f"schedule for loan: {schedule}")
 
-@router.post("/loan/{loan_id}/late-fee")
+
+
+@router.post(
+        "/loan/{loan_id}/late-fee",
+        responses={
+            200: {"description": HTTP_MESSAGES["SCHEDULES"]["LATE_FEE_CREATED"]},
+            400: {"description": HTTP_MESSAGES["SCHEDULES"]["LATE_FEE_TOO_EARLY"]},
+            404: {"description": HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_NOT_FOUND_FOR_LOAN"]}
+        })
 async def create_late_fee(
     loan_id: UUID,
     schedule_id: UUID,
@@ -179,12 +198,12 @@ async def create_late_fee(
 ):
     schedule = session.get(LoanSchedule, schedule_id)
     if not schedule or schedule.loan_id != loan_id:
-        raise HTTPException(status_code=404, detail="Schedule not found for this loan")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_NOT_FOUND_FOR_LOAN"])
     
     days_late = calculate_days_late(schedule.due_date)
     
     if days_late < 3:
-        raise HTTPException(status_code=400, detail="Late fee only applies after 3 days late")
+        raise HTTPException(status_code=400, detail=HTTP_MESSAGES["SCHEDULES"]["LATE_FEE_TOO_EARLY"])
     
     late_fee_schedule = LoanSchedule(
         loan_id=loan_id,

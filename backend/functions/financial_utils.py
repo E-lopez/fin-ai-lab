@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional
 
 def calculate_remaining_balance(
@@ -25,3 +25,11 @@ def calculate_total_balance(
     remaining_fees: Decimal
 ) -> Decimal:
     return remaining_principal + remaining_interest + remaining_fees
+
+def get_monthly_rate(annual_rate: Decimal) -> Decimal:
+    return annual_rate / Decimal('12')
+
+def get_fee_amount(principal: Decimal) -> Decimal:
+    taxes = principal * 4 / Decimal('1000')
+    partial = (principal * Decimal('0.05') + taxes).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    return max(partial.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP), 100000)  # Minimum fee of 100,000
