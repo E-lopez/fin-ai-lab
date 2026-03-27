@@ -17,6 +17,7 @@ HTTP_MESSAGES = {
 
     },
     "PAYMENTS": {
-        "PAYMENT_NOT_FOUND": "Payment not found"
+        "PAYMENT_NOT_FOUND": "Payment not found",
+        "PAYMENT_REVERSED_SUCCESSFULLY": "Payment reversed successfully"
     },
 }

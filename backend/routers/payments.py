@@ -1,4 +1,5 @@
 from typing import Annotated, Optional
+from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from uuid import UUID
@@ -188,14 +189,20 @@ async def create_payment(
     
     return db_payment
 
-@router.delete("/{payment_id}")
+@router.delete(
+        "/{payment_id}",
+        responses={
+            200: {"description": HTTP_MESSAGES["PAYMENTS"]["PAYMENT_REVERSED_SUCCESSFULLY"]},
+            404: {"description": HTTP_MESSAGES["PAYMENTS"]["PAYMENT_NOT_FOUND"]}
+        }
+    )
 async def reverse_payment(
     payment_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
     payment = session.get(Payment, payment_id)
     if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["PAYMENTS"]["PAYMENT_NOT_FOUND"])
     
     allocation_statement = select(PaymentAllocation).where(
         PaymentAllocation.payment_id == payment_id
