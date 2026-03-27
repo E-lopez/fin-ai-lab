@@ -6,6 +6,8 @@ from sqlmodel import Session, select
 from uuid import UUID
 from decimal import Decimal
 from datetime import date
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException
 
 from dependencies.db_client import get_session
 from schemas.Loan_schedule import LoanSchedule, LoanScheduleRead, LoanScheduleCreate
@@ -167,21 +169,31 @@ async def get_payment_progress(
     }
 
 
-@router.post("/")
+@router.post(
+        "/",
+        responses={
+            200: {"description": HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_CREATED_SUCCESSFULLY"]},
+            500: {"description": HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_CREATION_FAILED"]}
+        })
 async def create_loan_schedule(
     loan_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
-    # db_schedule = LoanSchedule(**schedule.model_dump())
-    # session.add(db_schedule)
-    # session.commit()
-    # session.refresh(db_schedule)
-    # return db_schedule
     loan = await get_loan_by_id(loan_id, session)
     print(f"Generating schedule for loan: {loan}")
     schedule = scheduler(loan.amortization_type)(loan)
     print(f"schedule for loan: {schedule}")
+    try:
+        db_entries = [LoanSchedule(loan_id=loan_id, **entry) for entry in schedule]
+        session.add_all(db_entries)
+        session.commit()
 
+    except SQLAlchemyError as e:
+        session.rollback()
+        print(f"Database error: {e}")
+        raise HTTPException(status_code=500, detail=HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_CREATION_FAILED"])
+
+    return {"message": f"Loan schedule created successfully with {len(schedule)} entries."}
 
 
 @router.post(

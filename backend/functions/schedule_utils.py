@@ -25,7 +25,8 @@ def french_amortization_schedule(loan: Loan) -> List[dict]:
     
     schedule = []
     balance = loan.principal
-    current_date = date.today()
+    today = date.today()
+    current_date = date(today.year, today.month, 10)
     current_period = 1
 
     for month in range(1, loan.term_months + 1):
@@ -59,7 +60,8 @@ def bullet_amortization_schedule(loan: Loan) -> List[dict]:
 
     schedule = []
     remaining_balance = loan.principal
-    current_date = date.today()
+    today = date.today()
+    current_date = date(today.year, today.month, 10)
     current_period = 1
 
     for month in range(1, loan.term_months + 1):
@@ -69,7 +71,7 @@ def bullet_amortization_schedule(loan: Loan) -> List[dict]:
         
         # 2. Principal is ONLY due if we hit the periodicity "beat"
         principal_due = Decimal('0.00')
-        if month % loan.periodicity == 0:
+        if month % periodicity == 0:
             if month == loan.term_months:
                 principal_due = remaining_balance # Clean up rounding
             else:

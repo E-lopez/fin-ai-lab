@@ -1,4 +1,5 @@
 from typing import Annotated, Optional
+from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlmodel import Session, select
 from uuid import UUID
@@ -39,24 +40,29 @@ async def get_loans_by_status(
     results = session.exec(statement).all()
     return results
 
-@router.get("/{loan_id}", response_model=LoanRead)
+@router.get(
+        "/{loan_id}",
+        response_model=LoanRead,
+        responses={404: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"]}})
 async def get_loan_by_id(
     loan_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
     loan = session.get(Loan, loan_id)
     if not loan:
-        raise HTTPException(status_code=404, detail="Loan not found")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"])
     return loan
 
-@router.get("/{loan_id}/balance")
+@router.get(
+        "/{loan_id}/balance",
+        responses={404: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"]}})
 async def calculate_loan_balance(
     loan_id: UUID,
     session: Annotated[Session, Depends(get_session)]
 ):
     loan = session.get(Loan, loan_id)
     if not loan:
-        raise HTTPException(status_code=404, detail="Loan not found")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"])
     
     schedule_statement = select(LoanSchedule).where(LoanSchedule.loan_id == loan_id)
     schedules = session.exec(schedule_statement).all()
@@ -95,12 +101,21 @@ async def create_loan(
     session: Annotated[Session, Depends(get_session)]
 ):
     db_loan = Loan(**loan.model_dump())
+    db_loan.status = "pending"
     session.add(db_loan)
     session.commit()
     session.refresh(db_loan)
     return db_loan
 
-@router.post("/{loan_id}/disburse", response_model=LoanRead)
+@router.post(
+        "/{loan_id}/disburse",
+        response_model=LoanRead,
+        responses={
+            200: {"description": HTTP_MESSAGES["LOANS"]["LOAN_DISBURSED_SUCCESSFULLY"]},
+            400: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_ACTIVE"]},
+            404: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"]}
+        }
+    )
 async def disburse_loan(
     loan_id: UUID,
     session: Annotated[Session, Depends(get_session)],
@@ -108,14 +123,14 @@ async def disburse_loan(
 ):
     loan = session.get(Loan, loan_id)
     if not loan:
-        raise HTTPException(status_code=404, detail="Loan not found")
+        raise HTTPException(status_code=404, detail=HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"])
     
-    if loan.status != "active":
-        raise HTTPException(status_code=400, detail="Loan must be in active status to disburse")
+    if loan.status != "pending":
+        raise HTTPException(status_code=400, detail=HTTP_MESSAGES["LOANS"]["LOAN_NOT_ACTIVE"])
     
     if disbursement_date:
         loan.start_date = disbursement_date
-    loan.status = "disbursed"
+    loan.status = "active"
     
     session.add(loan)
     session.commit()
