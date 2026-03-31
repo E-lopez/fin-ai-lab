@@ -1,0 +1,17 @@
+@import 'mainBar';
+@import 'sideBar';
+
+.navigation {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+  }
+}

@@ -1,0 +1,59 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 15%;
+    width: 100vw;
+    min-height: 100vh;
+    height: auto;
+    overflow-y: auto;
+    scrollbar-width: none;
+        
+    &--blue {
+        background-color: rgba($pale-blue, .6);
+    }
+    &--green {
+        background-color: $pale-green;
+    }
+    &--pink {
+        background-color: $pale-pink;
+    }
+    &--yellow {
+        background-color: $bright-yellow;
+    }
+    &--light-gray {
+        background-color: $color-gray-light;
+    }
+}
+
+.base-button-wrap {
+    display: flex;
+    padding-bottom: 25rem;
+}
+  
+@media screen and (768px < width <= 1024px) {
+    .base-layout {
+        padding-top: 10%;
+    }
+}
+
+@media screen and (1440px < width) {
+    .base-layout {
+        padding-top: 15%;
+        width: 100%;
+    }
+}
+
+// Fixed layout for tall screens
+@media screen and (height > 700px) {
+    .base-layout {        
+        &--fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+}

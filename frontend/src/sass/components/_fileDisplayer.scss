@@ -1,0 +1,22 @@
+.file-displayer {
+  h3 {
+    font-size: 1.3rem;
+    font-family: $text-primary;
+    color: $color-text;
+  }
+
+  &__record {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: .5rem 0;
+    & > img {
+      margin-right: .5rem;
+    }
+    p {
+      font-size: 1.3rem;
+      font-family: $text-secondary;
+    }
+  }
+}

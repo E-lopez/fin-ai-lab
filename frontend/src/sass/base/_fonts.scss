@@ -1,0 +1,17 @@
+$font-path: "public/fonts" !default;
+@font-face {
+    font-family: 'Oswald-bold';
+    src: url('../../../fonts/Oswald-Bold.ttf') format('truetype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Oswald-extralight';
+    src: url('../../../fonts/Oswald-ExtraLight.ttf') format('truetype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../../../fonts/Quicksand-VariableFont_wght.ttf') format('truetype');
+}

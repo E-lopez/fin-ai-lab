@@ -1,0 +1,54 @@
+.card-default {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: center;
+  background-color: $pale-green;
+  width: 90%;
+  margin: .5rem 0;
+  padding: 1rem;
+  border-radius: 25px;
+  gap: 2rem;
+
+  &__index {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 5rem;
+    height: 5rem;
+    background-color: rgba(#fff, .5);
+    border-radius: 50px;
+    box-shadow: 5px 5px 10px rgba(0,0,0, 0.25);
+  }
+}
+
+.card {
+  &--blue {
+    background-color: rgba($pale-blue, .6);
+  }
+  &--pink {
+    background-color: rgba($pale-pink, .6);
+  }
+  &--white {
+    background-color: rgba(#fff, .6);
+  }
+  &--yellow {
+    background-color: rgba($bright-yellow, .6);
+  }
+}
+
+@media screen and (width >= 768px) {
+  .card-default {
+    align-items: center;
+    width: 50%;
+    padding: 1rem;
+    gap: 2rem;
+
+    &__index {
+      min-width: 5rem;
+      height: 5rem;
+      font-size: 2rem;
+    }
+  }
+  
+}

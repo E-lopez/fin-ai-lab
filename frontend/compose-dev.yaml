@@ -1,0 +1,22 @@
+# For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  client-dev:
+    build: 
+      context: .
+      target: dev
+      args:
+        DOPPLER_TOKEN: ${DOPPLER_TOKEN}
+    environment:
+      NODE_ENV: development
+      DOPPLER_TOKEN: ${DOPPLER_TOKEN}
+    ports:
+      - 3000:3000
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .git
+            - node_modules

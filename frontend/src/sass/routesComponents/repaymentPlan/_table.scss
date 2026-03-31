@@ -1,0 +1,51 @@
+.repayment__table {
+  margin-bottom: 3rem;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  table {
+    overflow: auto;
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $text-primary;
+    font-size: 1.25rem;
+    text-align: center;
+    margin: 0 auto;
+    border-spacing: 0;
+  }
+    
+  thead,
+  tfoot {
+    background-color: $pale-blue;
+    color: #fff;
+    font-size: 2rem;
+    font-family: $text-secondary;
+  }
+  
+  th,
+  td {
+    border: 1px solid rgb(160 160 160);
+    padding: .8rem .5rem;
+  }
+  
+  td:last-of-type {
+    text-align: center;
+  }
+  
+  tbody > tr:nth-of-type(even) {
+    background-color: rgba($pale-blue, .2);
+  }
+  
+  tfoot th {
+    text-align: right;
+  }
+  
+  tfoot td {
+    font-weight: bold;
+  }
+  
+}

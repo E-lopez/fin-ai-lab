@@ -1,0 +1,101 @@
+.form-default {
+  position: relative;
+  margin: 0 auto;
+  width: 95%;
+  
+  &__field {
+    display: flex;
+    flex-direction: column;
+    margin: 0.25rem 0;
+
+    & > label {
+      font-family: 'Oswald-extralight', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      font-size: 1.7rem;
+    }
+  }
+
+  &__dropdown,
+  &__text-input {
+    background-color: rgba(#fff,.5);
+    border: none;
+    border: .15rem solid #777;
+    border-radius: 25px;
+    padding: 0 1rem;
+    height: 3.5rem;
+  }
+
+  &__dropdown {
+    margin-bottom: 1rem;
+  }
+
+  &__file-upload {
+    position: relative;
+    background-color: rgba(#fff,.5);
+    border: .15rem solid #777;
+    border-radius: 5px;
+    height: 20rem;
+    min-width: 300px;
+    margin: 0 auto;
+  }
+
+  input[type = submit] {
+    width: 90%;
+    min-width: 325px; 
+  }
+
+  &__upload-icon,
+  input[type=file] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    color: transparent;
+    &::file-selector-button {
+      display: none;
+    }
+  }
+
+  &__upload-icon{ 
+    color: rgba(#000,.5);
+    font-size: 1.4rem;
+  }
+
+  &__multi-choice {
+    & > * {
+      font-family: $button-label;
+      font-size: 2rem;
+    }
+    & > button {
+      margin: .5rem;
+      width: 40%;
+      height: 5rem;
+      border: none;
+      border-radius: 25px;
+      &:hover {
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+    &--active {
+      background-color: $pale-green;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+
+@media screen and (min-width: 425px) and (max-width: 768px){
+  .form-default {
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px){
+  .form-default {
+    width: 60%;
+  }
+}

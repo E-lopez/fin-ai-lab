@@ -1,0 +1,48 @@
+.base-button {
+  &--default {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button {
+    border: solid 2px #fff;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    text-wrap: nowrap;
+    width: auto;
+    background-color: #fff;
+    color: #000;
+    font-family: $button-label;
+    font-size: 2rem;
+    &--disabled {
+      background-color: rgba(#000,.5);
+      color: rgba(#000, .3);
+    }
+    &--blue {
+      background-color: $pale-blue;
+    }
+    &--pink {
+      background-color: $pale-pink;
+    }
+    &--green {
+      background-color: $pale-green;
+    }
+  }
+
+  &--accept {
+    &>button {
+      background-color: $pale-green;
+    }
+  }
+  
+  &--decline {
+    &>button {
+      background-color: $pale-pink;
+    }
+  }
+  
+  &__button:hover {
+    background-color: $bright-yellow;
+  }
+  
+}

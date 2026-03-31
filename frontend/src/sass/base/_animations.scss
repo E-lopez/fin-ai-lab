@@ -1,0 +1,203 @@
+@keyframes moveInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-10rem);
+  }
+
+  80% {
+    transform: translateX(1rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes moveInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(10rem);
+  }
+
+  80% {
+    transform: translateX(-1rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes moveInBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(100rem);
+  }
+
+  80% {
+    transform: translateY(-1rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandVertically {
+  0% {
+    opacity: 0;
+
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+
+  }
+}
+
+@keyframes moveInFromRight {
+  0% {
+
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+
+@keyframes moveOutTop {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  80% {
+    transform: translateY(-1rem);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10rem);
+    display: none;
+  }
+}
+
+@keyframes fadeAndReduce {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(.2);
+  }
+}
+
+@keyframes fillAndScale {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scrollToTop {
+  0% {
+    transform: translate(-50%, 90%);
+  }
+  100% {
+    transform: translate(-50%, 0%);
+    background-color: antiquewhite;
+  }
+}
+
+@keyframes secondaryImageAnimation {
+  0% {
+    opacity: .75;
+    transform: scale(1) translate(-10%, 10%);
+  }
+  25% {
+    opacity: .80;
+    transform: scale(1.2);
+  }
+  50% {
+    opacity: 1;
+    color: black;
+    transform: rotateY(15deg) translate(10%, -10%) scale(1.05);
+  }
+  75% {
+    opacity: .85;
+    transform: scale(.95);
+  }
+  100% {
+    opacity: .75;
+    transform: scale(1) translate(-10%, 10%);
+  }
+}
+
+@keyframes backColorChange {
+  0% {
+    background-color: rgb(225, 230, 220);
+  }
+  25% {
+    background-color: rgb(247, 246, 242);
+  }
+  50% {
+    background-color: rgb(232, 202, 190);
+  }
+  75% {
+    background-color:rgb(255, 230, 220);
+  }
+  100% {
+    background-color:rgb(245, 230, 220);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

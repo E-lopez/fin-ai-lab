@@ -1,0 +1,11 @@
+.root-container {
+  
+  margin: auto;
+}
+
+// Media Queries
+@media screen and (width > 768px) {
+  .root-container {
+    height: 150vh;
+  }
+}

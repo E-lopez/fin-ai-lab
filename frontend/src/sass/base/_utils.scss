@@ -1,0 +1,145 @@
+// Flex aligns
+.u-center-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.u-center-h {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+// Text aligns
+.u-center-text { text-align: center; }
+.u-right-text { text-align: right; }
+.u-left-text { text-align: left; }
+.u-justify-text { text-align: justify; }
+
+// Generic paddings and margins
+// Usage u-p-{number from 1 to 20}
+// expl: u-p-10, u-pt-2, u-ml-14
+// imple: mixins.scss
+body .u- { @include margin-modifiers }
+
+
+// Fon family utils
+.text-heading { font-family: $text-heading; }
+
+.text-primary { font-family: $text-primary; }
+
+.text-secondary { font-family: $text-secondary; }
+
+
+// responsive displays
+body .u-resp { display: none }
+
+@media screen and (width < 320px) {
+  body .u-xxs {
+    display: flex;
+  }
+}
+
+@media screen and (320px <= width < 768px) {
+  body .u-xs {
+    display: flex;
+  }
+}
+
+@media screen and (768px <= width < 1024px) {
+  body {
+    .u-md {
+      display: flex;
+    }
+  }
+}
+
+@media screen and (1024px <= width < 1440px) {
+  body .u-lg {
+    display: flex;
+  }
+}
+
+@media screen and (1440px <= width < 2560px) {
+  body .u-xl {
+    display: flex;
+  }
+}
+
+@media screen and (2560px <= width) {
+  body .u-xxl {
+    display: flex;
+  }
+}
+
+@media screen and (768px <= width) {
+  body .u-from-md {
+    display: flex;
+  }
+}
+
+@media screen and (1024px <= width) {
+  body .u-from-lg {
+    display: flex;
+  }
+}
+
+@media screen and (width <= 465px) {
+  body .u-down-sm {
+    display: flex;
+  }
+}
+
+@media screen and (width <= 768px) {
+  body .u-down-md {
+    display: flex;
+  }
+}
+
+// Miscellaneous
+.link-button {
+  border: none;
+  background-color: transparent;
+  font-family: 'Quicksand', Impact, sans-serif;
+  font-size: 1.6rem;
+  color: $pale-blue;
+  &:active,
+  &:focus {
+    color: $color-info;
+  }
+
+  &--dark {
+    color: $color-gray-dark;
+    text-decoration: underline;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    width: 30rem;
+
+    &:hover {
+      background-color: $color-gray-light;
+    }
+  }
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  &--sm {
+    max-width: 30%;
+  }
+  &--md {
+    max-width: 50%;
+  }
+  &--lg {
+    max-width: 70%;
+  }
+  &--xl {
+    max-width: 90%;
+  }
+}

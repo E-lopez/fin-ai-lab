@@ -1,0 +1,27 @@
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin constraintedWidthContainer {
+  align-self: center;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  max-width: $max-width;
+}
+
+@mixin margin-modifiers() {
+  @each $attribute, $abbrv in $attributes {
+      @each $measure in $measures {
+          &#{$abbrv}-#{$measure} {
+              #{$attribute}: #{$measure}px;
+          }
+      }
+  }
+}
+
+

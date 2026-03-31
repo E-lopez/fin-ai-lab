@@ -1,0 +1,32 @@
+@charset "UTF-8";
+@import '../../node_modules/bootstrap-icons/font/bootstrap-icons.css';
+
+@import 'abstracts/functions';
+@import 'abstracts/mixins';
+@import 'abstracts/variables';
+@import 'abstracts/maps';
+
+@import 'base/base';
+@import 'base/animations';
+@import 'base/fonts';
+@import 'base/typography';
+@import 'base/utils';
+
+@import 'components/button';
+@import 'components/alert';
+@import 'components/form';
+@import 'components/fileDisplayer';
+@import 'components/footer';
+@import 'components/menu';
+@import 'components/survey-form';
+@import 'components/modal';
+@import 'components/loader';
+@import 'components/card';
+
+@import 'layout/base';
+@import 'layout/grid';
+
+@import 'routes/root';
+@import 'routes/home';
+
+@import 'navigation/navigation';

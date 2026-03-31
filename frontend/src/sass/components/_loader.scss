@@ -1,0 +1,106 @@
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+
+  &--linear {
+    flex-direction: column;
+  }
+}
+
+.loading-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: rgba($color-gray-light, .5);
+  border-radius: 100%;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 5px 5px 10px rgba(255,255,255, 0.1);
+
+  & div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 35px dotted $pale-blue;
+    border-radius: 50%;
+    box-shadow: 5px 5px 10px rgba(255,255,255, 0.25);
+    animation: rotate 3s linear infinite;
+    animation-delay: calc(0.2s * var(--i));
+    font-size: 5rem;
+  }
+}
+
+
+.loading {
+  &-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;  
+
+    & div {
+      position: relative;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      background-color: rgba($pale-blue, .75);
+      font-size: 5rem;
+    }
+  }
+
+  &-dot {
+    animation: bounce 3s ease infinite;
+    &-1 {
+      animation-delay: 0s;
+    }
+    &-2 {
+      animation-delay: 0.4s;
+    }
+    &-3 {
+      animation-delay: 0s;
+    }
+  }
+
+}
+
+// Animations
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+    border-color: rgba($pale-blue, 1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.75);
+    border-color: rgba($pale-blue, .75);
+  }
+  100% {
+    transform: rotate(360deg);
+    border-color: rgba($pale-blue, 1);
+  }
+}
+
+@keyframes bounce {
+  0% {
+
+    background-color: rgba($pale-blue, 1);
+  }
+  50% {
+    transform: scale(0.75) translateY(.25rem);
+    background-color: rgba($pale-blue, .5);
+  }
+  100% {
+    background-color: rgba($pale-blue, 1);
+  }
+}
+
+
+
+
+

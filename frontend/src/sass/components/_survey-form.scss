@@ -1,0 +1,267 @@
+.survey-form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: none;
+  height: auto;
+  padding-bottom: 10rem;
+  margin: 0 auto;
+  scroll-padding: 100px 0 0;
+  scroll-snap-type: y proximity;
+  animation: moveInBottom 1s;
+
+  & > div {
+    justify-content: center;
+    scroll-snap-align: start none;
+  }
+  
+  &__field {
+    display: flex;
+    flex-direction: column;
+
+    & > label {
+      font-family: 'Quicksand', Impact, sans-serif;
+      font-size: 2rem;
+      line-height: 2.5rem;
+      margin: 1.2rem 0;
+    }
+  }
+
+  &__dropdown,
+  &__text-input {
+    background-color: rgba(#fff,.25);
+    border: none;
+    border-bottom: .5rem solid $pale-green;
+    padding: 0 1rem;
+    height: 6rem;
+    font-family: 'Quicksand', Impact, sans-serif;
+    font-size: 1.9rem;
+  }
+  
+  &__likert {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(#fff,.25);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: .5rem solid $pale-green;
+    padding: 1rem;
+    margin: 1rem 0;
+    
+    &-buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      margin-top: 2rem;
+
+      & > button {
+        border: none;
+        height: 5rem;
+        width: 5rem;
+        border-radius: 25px;
+        font-family: 'Quicksand', Impact, sans-serif;
+        font-size: 2.8rem;
+        font-weight: 500;
+        color: $pale-blue;
+        background-color: $color-gray-light;
+      }
+
+      .active-likert {
+        background-color: $bright-yellow;
+        border: solid 2px $color-black;
+      }
+    }
+  }
+
+  &__multiple-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(#fff,.25);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: .5rem solid $pale-green;
+    padding: 1rem;
+    margin: 1rem 0;
+
+    &-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 1rem;
+
+      & > button {
+        border: none;
+        border-radius: 25px;
+        font-family: 'Quicksand', Impact, sans-serif;
+        width: 90%;
+        min-height: 7rem;
+        padding: .6rem;
+        margin: .4rem 0;
+        font-size: 2.8rem;
+        font-weight: 500;
+        color: $pale-blue;
+        background-color: $color-gray-light;
+      }
+
+      .active-choice {
+        background-color: $bright-yellow;
+        border: solid 2px $color-black;
+      }
+
+    }
+  }
+
+  &__helper-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+    & > p {
+      max-width: 50%;
+    }
+  }
+
+  &__dropdown:focus,
+  &__text-input:focus {
+    background-color: $pale-green;
+  }
+
+  &__file-upload {
+    position: relative;
+    background-color: rgba(#fff,.25);
+    border: .25rem solid $color-black;
+    border-radius: 25px;
+    height: 50vh;   
+  }
+
+  input[type = range]  {
+    background-color: #777;
+  }
+
+  input[type = submit] {
+    width: 90%;
+    height: 4.5rem;
+    transform: translate(4%, 10%);  
+    border: 2px solid $color-black;
+  }
+
+  &__upload-icon,
+  input[type=file] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    color: transparent;
+    &::file-selector-button {
+      display: none;
+    }
+  }
+
+  &__upload-icon{ 
+    color: rgba(#000,.5);
+    font-size: 1.4rem;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10rem;
+    background-color: $color-translucid-white-50;
+    border-radius: 25px;
+    gap: 1rem;
+
+    input[type=checkbox] {
+      accent-color: $pale-green;
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+
+// TO DO:
+// Replace with a more robust validation system
+input:invalid + span::after {
+  content: "✖ valor incorrecto";
+  font-size: 1.5rem;
+  font-family: $button-label;
+  color:crimson;
+  float: right;
+}
+
+input:valid + span::after {
+  content: "✓ ok";
+  font-size: 1.5rem;
+  font-family: $button-label;
+  color: $pale-blue;
+  float: right;
+}
+
+
+@media screen and (min-width: 375px) and (max-width: 768px) {
+  .survey-form {
+    min-width: 375px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1440px) {
+  .survey-form {
+    display: flex;
+    align-items: center;
+    width: 70%;
+    min-width: 768px;
+
+    &__field {
+      width: 60%;
+      & > input {
+        width: 100%;
+      }
+    }
+
+    &__dropdown,
+    &__text-input {
+      width: 100%;
+      & > input {
+        width: 100%;
+      }
+    }
+
+    input[type = submit] {
+      width: 40%;
+      transform: translate(0%, 10%);  
+    }
+
+    &__likert,
+    &__multiple-choice {
+      margin: 1rem auto;
+      width: 90%;
+    }
+
+    &__file-upload,
+    &__checkbox {   
+      width: 35rem;
+      margin: 0 auto;
+    }
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .survey-form {
+    
+    &__likert,
+    &__multiple-choice {
+      margin: 0 auto;
+      width: 70%;
+    }
+
+  }
+}
