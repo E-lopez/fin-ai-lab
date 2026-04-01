@@ -7,7 +7,6 @@ export default function TokenReducer(
     payload?: Record<string, string> 
   }
 ) {
-  console.log("TOKEN REDUCER ACTION:", action.payload);
   switch(action.type) {
     case 'SAVE_TOKEN':
       return {

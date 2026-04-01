@@ -4,14 +4,29 @@
   z-index: 1000;
   height: 5rem; 
 
-
-
   &__container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     height: 100%;
+  }
+
+  &__center-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  &__user-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 1rem;
   }
 }
 

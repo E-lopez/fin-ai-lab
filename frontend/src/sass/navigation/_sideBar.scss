@@ -1,8 +1,10 @@
 .side-bar {
   display: flex;
   flex-direction: column;
-  min-width: 6rem;
-  padding: 0.5rem;
+  align-items: flex-start;
+  min-width: 15%;
+  padding: 1rem 0;
+  background-color: $color-gray-light;
   
   &__home-icon {
     display: flex;
@@ -12,6 +14,46 @@
     &>img{
       width: 5rem;
       height: auto;
+    }
+  }
+
+  &__btns {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    &-btn {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-right: 2rem;
+      cursor: pointer;
+      gap: 1.5rem;
+      width: 100%;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      padding: 0.5rem 1rem;
+
+      &--active {
+        background-color: $pale-green;
+        box-shadow: 1px 5px 10px 0px rgba($color-gray-dark, 0.25);
+      }
+      
+      &:hover,
+      &:hover * {
+        background-color: $pale-blue;
+        color: #fff;
+      }
+    }
+
+    &-icon {
+      font-size: 2rem;
+      color: $color-gray-dark;
+
     }
   }
 

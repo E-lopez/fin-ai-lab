@@ -1,5 +1,5 @@
 import { useModal, useModalDispatch } from "@/stores/modals/ModalStore";
-import CustomButton from "../button/CustomButton";
+
 
 const ModalComponent = () => {
   const modal: any = useModal();
@@ -23,11 +23,6 @@ const ModalComponent = () => {
       </button>
       <div className={`u-center-v base-modal__content ${cssModifier}__content`}>
         {modal.content}
-        {/* <CustomButton 
-          method={hideModal} 
-          label='Close'
-          cssModifier="base-button--dark" 
-        /> */}
       </div>
     </dialog>
   )
