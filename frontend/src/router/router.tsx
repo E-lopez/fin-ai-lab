@@ -3,9 +3,9 @@ import '@/sass/index.scss';
 
 import { 
   Root, 
-  Home,
   NotFound,
 } from '../routes';
+import Overview from '@/routes/overview/Overview';
 import Test from '@/routes/test/test';
 
 const routes = [
@@ -20,7 +20,7 @@ const routes = [
         children: [
           {
             index: true,
-            element: <Home />,
+            element: <Overview />,
           },
           {
             path: 'test',

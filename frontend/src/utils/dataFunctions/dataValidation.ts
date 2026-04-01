@@ -1,4 +1,4 @@
-import { UserService } from "@/services/userApi/userService";
+import { UserService } from "@/services/legacy/userApi/userService";
 
 type Validator = (value: any, access_token: string) => void | boolean | Promise<any>;
 

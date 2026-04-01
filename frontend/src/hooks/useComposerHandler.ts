@@ -3,7 +3,7 @@ import { CreateUserRequest, ScoringData } from "@/models/dto/CreateUserRequest";
 import { ScoreResponse } from "@/models/dto/ScoreResponse";
 import { UpdateUserRiskRequest } from "@/models/dto/UpdateUserRiskRequest";
 import { User, UserApiResponse } from "@/models/dto/user";
-import { UserService } from "@/services/userApi/userService";
+import { UserService } from "@/services/legacy/userApi/userService";
 
 import { useAlertDispatch } from "@/stores/alerts/AlertsStore";
 import { useSurveyDispatch } from "@/stores/survey/SurveyStore";

@@ -1,5 +1,5 @@
-const Home = () => {
-  
+const Overview = () => {
+
 
   return(
     <div className="home-container">
@@ -8,4 +8,4 @@ const Home = () => {
   )
 }
 
-export default Home;
+export default Overview;

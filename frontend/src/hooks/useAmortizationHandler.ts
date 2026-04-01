@@ -1,6 +1,6 @@
 import DataInfo from "@/constants/DataInfo";
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
-import { AmortizationService } from "@/services/amortizationService/amortizationService";
+import { AmortizationService } from "@/services/legacy/amortizationService/amortizationService";
 import { useAlertDispatch } from "@/stores/alerts/AlertsStore";
 import { useAmortizationDispatch } from "@/stores/amortization/AmortizationStore";
 

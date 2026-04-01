@@ -1,5 +1,5 @@
 import { FilesUploadRequest } from "@/models/dto/filesUploadRequest";
-import { FilesService } from "@/services/filesApi/filesService";
+import { FilesService } from "@/services/legacy/filesApi/filesService";
 import { useAlertDispatch } from "@/stores/alerts/AlertsStore";
 import { sanitizeFileName } from "@/utils/functions/files";
 
