@@ -3,8 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 15%;
-    width: 100vw;
+    padding-top: 2rem;
     min-height: 100vh;
     height: auto;
     overflow-y: auto;
@@ -34,7 +33,7 @@
   
 @media screen and (768px < width <= 1024px) {
     .base-layout {
-        padding-top: 10%;
+
     }
 }
 
@@ -48,12 +47,6 @@
 // Fixed layout for tall screens
 @media screen and (height > 700px) {
     .base-layout {        
-        &--fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
+
     }
 }

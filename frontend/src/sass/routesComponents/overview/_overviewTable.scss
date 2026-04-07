@@ -1,0 +1,59 @@
+.overview-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 2rem;
+
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: $text-primary;
+    font-size: 1.4rem;
+
+    select {
+      padding: .4rem .8rem;
+      font-family: $text-primary;
+      font-size: 1.4rem;
+      border: 1px solid $color-gray-mid;
+      border-radius: 4px;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $text-primary;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  &__scroll {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  thead {
+    background-color: $pale-blue;
+    color: #fff;
+    font-size: 1.4rem;
+    font-family: $text-secondary;
+  }
+
+  th,
+  td {
+    border: 1px solid rgb(160 160 160);
+    padding: .8rem .5rem;
+  }
+
+  tbody > tr:nth-of-type(even) {
+    background-color: rgba($pale-blue, .2);
+  }
+
+  &__row--overdue {
+    background-color: rgba($pale-pink, .7);
+    color: $color-text;
+  }
+}

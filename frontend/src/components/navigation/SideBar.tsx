@@ -6,7 +6,7 @@ const model = [
   {
     name: 'overview',
     icon: 'bi-bar-chart-fill',
-    path: 'test',
+    path: 'overview',
   },
   {
     name: 'borrowers',

@@ -1,0 +1,15 @@
+# Coding guidelines:
+- Follow Single Resposibility principle whenever possible.
+- Mathematical calculations, data wrangling operations or formatting operations must go inside the src/utils functions in the approriate file.
+  - Organize the utils functions inside of independent files logically related: date utils, financial math utils, formating utils, etc.
+- The http operations follow a facade pattern inside the services src/folder
+- styling follows a 7 to 1 sass architecture, follow the conventions under the sass folder
+- keep the code clean, avoid nested if or loops.
+- keep the files short, avoid spaguetti code files
+- follow the same naming conventions as the rest of the file
+- abstract dumb components into the components folder
+- TS types and interfaces go under the src/models
+- Reuse util funtions. Do no rewrite the same function for multiple cases.
+- Do not add comments to the code, but output to the (changelog.md) file the code written as you progress. 
+- WRITE YOUR PROGRESS SUCCINTLY but clearly, explaining what changes did you apply.
+- follow the importing style, do not write to sys.path unless absolutely needed.

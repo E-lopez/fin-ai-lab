@@ -11,11 +11,20 @@
   overflow: hidden;
 
   &__main {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    position: relative;
     min-width: 0;
+    height: 100vh;
+    overflow: hidden;
   }
 
   &__content {
-
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    padding-top: 6rem;
   }
 }

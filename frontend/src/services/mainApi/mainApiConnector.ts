@@ -1,10 +1,16 @@
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
 
-export default class AmortizationApiConnector {
-  static readonly baseUrl: string = import.meta.env.VITE_SCORE_LAMBDA_URL;
-
+export default class MainApiConnector {
+  static readonly baseUrl: string = import.meta.env.VITE_API_URL;
+  
   get currentBaseUrl() {
-    return AmortizationApiConnector.baseUrl
+    return MainApiConnector.baseUrl
+  }
+
+  async getSummary() {
+    const response = await fetch(`${this.currentBaseUrl}/loans/loans-summary`);
+    const json = await response.json();
+    return json;
   }
 
   async getRepaymentPlan(payload: repaymentPlanRequest, access_token: string) {

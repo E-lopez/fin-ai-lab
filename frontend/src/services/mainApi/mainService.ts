@@ -1,11 +1,15 @@
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
-import AmortizationApiConnector from "./amortizationApiConnector";
+import AmortizationApiConnector from "./mainApiConnector";
 
-class AmortizationFacade {
+class MainApiServiceFacade {
   connector: AmortizationApiConnector;
 
   constructor(connector: new () => AmortizationApiConnector) {
     this.connector = new connector();
+  }
+
+  getSummary() {
+    return this.connector.getSummary();
   }
 
   getRepaymentPlan(payload: repaymentPlanRequest, access_token: string) {
@@ -14,4 +18,4 @@ class AmortizationFacade {
 
 }
 
-export const AmortizationService = new AmortizationFacade(AmortizationApiConnector);
+export const MainApiService = new MainApiServiceFacade(AmortizationApiConnector);

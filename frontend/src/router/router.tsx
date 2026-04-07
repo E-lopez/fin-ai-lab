@@ -19,6 +19,7 @@ const routes = [
         errorElement: <NotFound />,
         children: [
           {
+            path: 'overview',
             index: true,
             element: <Overview />,
           },
