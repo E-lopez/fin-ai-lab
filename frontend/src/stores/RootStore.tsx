@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { AlertProvider } from './alerts/AlertsStore';
 import { ModalProvider } from './modals/ModalStore';
 import { SurveyProvider } from './survey/SurveyStore';
-import { AmortizationProvider } from './amortization/AmortizationStore';
+import { LoansProvider } from './loans/LoansStore';
 import { TokenProvider } from './tokens/TokenStore';
 
 const RootStore = ({children}: { children: ReactElement }) => {
@@ -10,11 +10,11 @@ const RootStore = ({children}: { children: ReactElement }) => {
     <AlertProvider>
       <ModalProvider>
         <SurveyProvider>
-          <AmortizationProvider>
+          <LoansProvider>
             <TokenProvider>
               {children}
             </TokenProvider>
-          </AmortizationProvider>
+          </LoansProvider>
         </SurveyProvider>
       </ModalProvider>
     </AlertProvider>

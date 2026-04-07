@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import { LoanSummary } from "@/models/dto/loanSummary";
 import { toCurrency } from "@/utils/functions/currency";
+import { useLoansState } from "@/stores/loans/LoansStore";
 
 interface Props {
   data: LoanSummary[];
 }
 
-const LoanSummaryTable = ({ data }: Props) => {
+const LoanSummaryTable = () => {
   const [statusFilter, setStatusFilter] = useState("active");
+  const [loansState] = useLoansState();
 
-  const statuses = ["all", ...Array.from(new Set(data.map((d) => d.status)))];
-  const filtered = statusFilter === "all" ? data : data.filter((d) => d.status === statusFilter);
+  const statuses = ["all", ...Array.from(new Set<string>(loansState.loansOverview.map((d: LoanSummary) => d.status)))];
+  const filtered = statusFilter === "all" ? loansState.loansOverview : loansState.loansOverview.filter((d: LoanSummary) => d.status === statusFilter);
 
   return (
     <div className="overview-table">
@@ -38,7 +40,7 @@ const LoanSummaryTable = ({ data }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {filtered.map((loan, i) => (
+          {filtered.map((loan: LoanSummary, i: number) => (
             <tr key={loan.id} >
               <td>
                 <a href={`/loans/${loan.id}`}>{i + 1}</a>
