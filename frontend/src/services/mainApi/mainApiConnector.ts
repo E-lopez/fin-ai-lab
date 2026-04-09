@@ -1,3 +1,4 @@
+import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
 
 export default class MainApiConnector {
@@ -11,6 +12,30 @@ export default class MainApiConnector {
     const response = await fetch(`${this.currentBaseUrl}/loans/loans-summary`);
     const json = await response.json();
     return json;
+  }
+
+  async addPayment(payload: addPaymentRequest) {
+    try {
+      const response = await fetch(`${this.currentBaseUrl}/payments`, {
+        mode: 'cors',
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw response;
+      }
+      const json = await response.json();
+      return json;
+      
+    } catch (e: any) {
+      console.error('Main API error:', e);
+      const ex = await e.json()
+      const errObject = {
+        type: ex.name,
+        message: ex.message, 
+      }
+      throw errObject;
+    }
   }
 
   async getRepaymentPlan(payload: repaymentPlanRequest, access_token: string) {
@@ -36,5 +61,4 @@ export default class MainApiConnector {
       throw errObject;
     }
   }
-
 }

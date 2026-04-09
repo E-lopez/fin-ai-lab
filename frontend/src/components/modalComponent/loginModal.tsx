@@ -19,7 +19,7 @@ const model = {
 };
 
 const LoginModal = () => {
-  const [formVersion, setFormVersion] = useState(0);
+  const [formVersion] = useState(0);
   const tokenDispatch = useTokenDispatch();
   const modalDispatch = useModalDispatch();
 

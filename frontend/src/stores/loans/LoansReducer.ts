@@ -11,7 +11,7 @@ export default function surveyReducer(
     case 'STORE_LOANS_OVERVIEW': {
       return {
         ...loansState,
-        loansOverview: [...loansState.loansOverview, ...action.loansOverview],
+        loansOverview: action.loansOverview,
       }
     }
     case 'RESET_DATA': {

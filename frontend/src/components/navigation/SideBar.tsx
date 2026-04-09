@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import img from '@assets/logo_1.png';
 import { useState } from "react";
 
 const model = [
@@ -39,13 +38,9 @@ const SideBar = () => {
   const [activeBtn, setActiveBtn ] = useState('overview');
   
   return(
-      <nav className="side-bar" >
-        <div className="side-bar__home-icon">
-          <Link to="/" className="side-bar__home-icon">
-            <img src={img} alt={'kredit logo'} />
-          </Link>
-        </div>
+      <nav className="side-bar">
         <div className="side-bar__btns">
+          <p className="paragraph bold u-ml-10">Navigation</p>
           {
             model.map((item) => (
               <Link

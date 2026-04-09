@@ -4,9 +4,9 @@ import SideBar from "./SideBar";
 const Navigation = ({ children }: { children: React.ReactNode}) => {   
   return(
     <div className='navigation'>
-      <SideBar />
+      <MainBar />
       <div className='navigation__main'>
-        <MainBar />
+        <SideBar />
         <div className='navigation__content'>
           { children }
         </div>

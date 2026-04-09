@@ -20,7 +20,7 @@ const Overview = () => {
   }, []);
 
   return (
-    <div className="home-container">
+    <div className="overview-container">
       <LoanSummaryTable />
     </div>
   );

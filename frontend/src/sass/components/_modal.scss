@@ -60,3 +60,38 @@
     }
   }
 }
+
+.side-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 50%;
+    z-index: 1000;
+    background-color: $color-translucid-white-95;
+    border: none;
+    animation: moveInFromRight 0.3s ease-out;
+    overflow: hidden;
+
+    &__content {
+      height: 100%;
+      max-width: $max-width-sm;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__close-button {
+      position: absolute;
+      left: 2%;
+      top: 1%;
+      background-color: $mid-blue;
+      color: #fff;
+      border: none;
+      height: 3.5rem;
+      width: 3.5rem;
+    }
+}

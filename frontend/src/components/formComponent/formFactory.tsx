@@ -111,7 +111,7 @@ const FormFactory = ({
           )
         })
       }
-      <p className="u-mt-10 u-right-text">Campos obligatorios*</p>
+      <p className="u-mt-10 u-right-text">Required fields*</p>
       {
         model.files && 
         <FileDisplayer content={model.files} />

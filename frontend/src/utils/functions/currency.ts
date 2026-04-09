@@ -1,5 +1,5 @@
 export const toCurrency = (value: number | bigint | string) => {
-  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  const numValue = typeof value === 'string' ? Number.parseFloat(value) : value;
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "COP" }).format(numValue);
 };
 

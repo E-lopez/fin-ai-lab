@@ -1,5 +1,6 @@
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
 import AmortizationApiConnector from "./mainApiConnector";
+import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
 
 class MainApiServiceFacade {
   connector: AmortizationApiConnector;
@@ -10,6 +11,10 @@ class MainApiServiceFacade {
 
   getSummary() {
     return this.connector.getSummary();
+  }
+
+  addPayment(payload: addPaymentRequest) {
+    return this.connector.addPayment(payload);
   }
 
   getRepaymentPlan(payload: repaymentPlanRequest, access_token: string) {

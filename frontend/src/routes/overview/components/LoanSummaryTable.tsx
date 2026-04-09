@@ -1,64 +1,110 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import { useState } from "react";
 import { LoanSummary } from "@/models/dto/loanSummary";
 import { toCurrency } from "@/utils/functions/currency";
 import { useLoansState } from "@/stores/loans/LoansStore";
+import TableModal from "@/components/modalComponent/tableModal";
+import { useModalDispatch } from "@/stores/modals/ModalStore";
 
-interface Props {
-  data: LoanSummary[];
-}
 
 const LoanSummaryTable = () => {
   const [statusFilter, setStatusFilter] = useState("active");
   const [loansState] = useLoansState();
+  const modalDispatch = useModalDispatch();
 
-  const statuses = ["all", ...Array.from(new Set<string>(loansState.loansOverview.map((d: LoanSummary) => d.status)))];
-  const filtered = statusFilter === "all" ? loansState.loansOverview : loansState.loansOverview.filter((d: LoanSummary) => d.status === statusFilter);
+  const statuses = ["all", ...Array.from(
+    new Set<string>(loansState.loansOverview.map((d: LoanSummary) => d.status)))
+  ];
+
+  const filtered = statusFilter === "all" ? 
+  loansState.loansOverview : 
+  loansState.loansOverview.filter((d: LoanSummary) => d.status === statusFilter);
+
+  const showModal = (action: 'add' | 'edit', loan: LoanSummary) => {
+    modalDispatch({
+      type: 'SHOW_MODAL',
+      content: <TableModal action={action} loan={loan} />,
+      cssModifier: 'side-modal',
+    })
+  }
+
+  const handleRowAction = (loan: LoanSummary, action: string) => {
+    switch(action) {
+      case "add": {
+        console.log("ADD PAYMENT FOR LOAN ID:", loan);
+        showModal(action, loan);
+        break;
+      }
+      case "edit": {
+        console.log("EDIT LOAN ID:", loan);
+        showModal(action, loan);
+        break;
+      }
+      default: {
+        console.error("UNKNOWN ACTION:", action);
+      }
+    }
+  };
 
   return (
     <div className="overview-table">
       <div className="overview-table__filter">
-        <label htmlFor="status-filter">Status:</label>
-        <select id="status-filter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+        <select
+          id="status-filter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
           {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
       <div className="overview-table__scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Borrower</th>
-            <th>Status</th>
-            <th>Amount</th>
-            <th>Total Balance</th>
-            <th>Total Payments</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Last Payment</th>
-            <th>Next Payment</th>
-            <th>Days Since Payment</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((loan: LoanSummary, i: number) => (
-            <tr key={loan.id} >
-              <td>
-                <a href={`/loans/${loan.id}`}>{i + 1}</a>
-              </td>
-              <td >{loan.borrower_name}</td>
-              <td>{loan.status}</td>
-              <td>{toCurrency(loan.amount)}</td>
-              <td>{toCurrency(loan.total_balance)}</td>
-              <td>{toCurrency(loan.total_payments)}</td>
-              <td>{loan.start_date}</td>
-              <td>{loan.last_due_date}</td>
-              <td>{loan.last_payment_date}</td>
-              <td className={loan.is_overdue ? "overview-table__row--overdue" : ""}>{loan.next_payment_date}</td>
-              <td>{loan.days_since_payment}</td>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Borrower</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Balance</th>
+              <th>Payments</th>
+              <th>Rem</th>
+              <th>Last Payment</th>
+              <th>Next Payment</th>
+              <th>Days Since Payment</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((loan: LoanSummary) => (
+              <tr key={loan.id} >
+                <td>
+                  <i className={`${loan.is_overdue ? "red" : "dark-green"} u-ml-4 bi-circle-fill`}></i>
+                </td>
+                <td 
+                  className={loan.is_overdue ? "overview-table__row--overdue" : ""}
+                >
+                  <a href={`/test/${loan.id}`}>
+                    {loan.borrower_name}
+                  </a>
+                </td>
+                <td>{loan.status}</td>
+                <td>{toCurrency(loan.amount)}</td>
+                <td>{toCurrency(loan.total_balance)}</td>
+                <td>{toCurrency(loan.total_payments)}</td>
+                <td>{((Number(loan.total_balance) / Number(loan.amount))*100).toFixed(2) || 0}%</td>
+                <td>{loan.last_payment_date || 'n/a'}</td>
+                <td>{loan.next_payment_date || 'n/a'}</td>
+                <td>{loan.days_since_payment || 'n/a'}</td>
+                <td className="overview-table__row-buttons">
+                  <button 
+                    className="blue"
+                    onClick={() => handleRowAction(loan, "add")} >
+                     <i className="bi-plus-circle-fill"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
