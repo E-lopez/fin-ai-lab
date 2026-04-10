@@ -93,7 +93,7 @@ const LoanSummaryTable = () => {
                 <td>{((Number(loan.total_balance) / Number(loan.amount))*100).toFixed(2) || 0}%</td>
                 <td>{loan.last_payment_date || 'n/a'}</td>
                 <td>{loan.next_payment_date || 'n/a'}</td>
-                <td>{loan.days_since_payment || 'n/a'}</td>
+                <td>{loan.days_since_payment}</td>
                 <td className="overview-table__row-buttons">
                   <button 
                     className="blue"

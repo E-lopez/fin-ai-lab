@@ -19,6 +19,10 @@ export default class MainApiConnector {
       const response = await fetch(`${this.currentBaseUrl}/payments`, {
         mode: 'cors',
         method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(payload),
       });
       if (!response.ok) {

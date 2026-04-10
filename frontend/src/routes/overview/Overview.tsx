@@ -8,7 +8,7 @@ const Overview = () => {
   const [loansState,loansDispatch] = useLoansState();
 
   useEffect(() => {
-    if(loansState.loansOverview.length > 0) return;
+    if(loansState.isLoaded) return;
     MainApiService.getSummary()
       .then((data: LoanSummary[]) => {
         loansDispatch({
@@ -17,7 +17,7 @@ const Overview = () => {
         })
       })
       .catch((error) => console.error("ERROR FETCHING SUMMARY:", error));
-  }, []);
+  }, [loansState.isLoaded]);
 
   return (
     <div className="overview-container">

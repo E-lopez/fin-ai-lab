@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useModalDispatch } from "@/stores/modals/ModalStore";
-import { useTokenDispatch } from "@/stores/tokens/TokenStore";
 import FormFactory from "../formComponent/formFactory";
 import { addPayment } from "@/models/forms/addPaymentModal";
 import { MainApiService } from "@/services/mainApi/mainService";
 import { LoanSummary } from "@/models/dto/loanSummary";
+import { useLoansDispatch } from "@/stores/loans/LoansStore";
+import { getTodayDate } from "@/utils/functions/dataTime";
 
 const SuccessView = () => (
    <div className="u-center-v">
-      <h1 className="paragraph paragraph--lg">Payment added successfully!</h1>
+      <h1 className="paragraph paragraph--lg dark-green">Payment added successfully!</h1>
     </div>
 );
 
@@ -21,26 +21,20 @@ const ErrorView = () => (
 const TableModal = ({ action, loan }: {action: 'add' | 'edit'; loan: LoanSummary}) => {
   const [status, setStatus] = useState('idle');
   const [formVersion] = useState(0);
-  const tokenDispatch = useTokenDispatch();
-  const modalDispatch = useModalDispatch();
+  const loansDispatch = useLoansDispatch();
+  
 
   const savePayment = (data: any) => {
-    const today = new Date().toISOString().split('T')[0];
-
-    console.log("TEST PAYKMENT DATA:", {
-      loan_id: loan.id,
-      paid_amount: data.amount,
-      payment_date: today,
-    });
-    
+    const today = getTodayDate();    
     MainApiService.addPayment({
       loan_id: loan.id,
-      paid_amount: data.amount,
+      paid_amount: Number(data.amount),
       payment_date: today,
     })
     .then(() => {
-      modalDispatch({
-        type: 'HIDE_MODAL',
+      loansDispatch({
+        type: "SYNC_LOANS_OVERVIEW",
+        isLoaded: false,
       });
       setStatus('success');
     })

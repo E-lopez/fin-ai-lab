@@ -2,20 +2,21 @@ import {
   createContext, 
   ReactElement, 
   useContext, 
-  useReducer 
+  useReducer,
+  Reducer 
 } from "react";
 import loansReducer from "./LoansReducer";
-import { intialAmortizationModel } from "./initialMode";
+import { loansOverviewModel, loansOverviewModelType } from "./initialMode";
 
 
-const LoansContext = createContext(null);
+const LoansContext = createContext<loansOverviewModelType | null>(null);
 const LoansDispatchContext = createContext<any>([]);
 
 
 export function LoansProvider ({ children }: Readonly<{ children: ReactElement }>) {
-  const [loansData, dispatch] = useReducer(
+  const [loansData, dispatch] = useReducer<Reducer<loansOverviewModelType, any>>(
     loansReducer,
-    intialAmortizationModel,
+    loansOverviewModel,
   );
 
   return(

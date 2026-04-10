@@ -5,7 +5,7 @@ interface DateTimeOptions {
 
 export function monthYearFormat(value: string) {
   const date = new Date(value);
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     return value; // Return original value if invalid date
   }
   const options: DateTimeOptions = {
@@ -20,4 +20,12 @@ export function SecondsToMinutesSeconds(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = String(totalSeconds % 60).padStart(2, '0');
   return { minutes, seconds };
+}
+
+export function getTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

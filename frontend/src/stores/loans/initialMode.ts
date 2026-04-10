@@ -1,9 +1,11 @@
 import { LoanSummary } from "@/models/dto/loanSummary"
 
-export type InitialModelType = {
+export type loansOverviewModelType = {
   loansOverview?: LoanSummary[],
+  isLoaded?: boolean,
 }
 
-export const intialAmortizationModel: InitialModelType = {
+export const loansOverviewModel: loansOverviewModelType = {
   loansOverview: [],
+  isLoaded: false,
 }
