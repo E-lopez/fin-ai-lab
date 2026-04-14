@@ -7,6 +7,8 @@ import {
 } from '../routes';
 import Overview from '@/routes/overview/Overview';
 import Test from '@/routes/test/test';
+import LoanConfig from '@/routes/loanConfig/LoanConfig';
+
 
 const routes = [
   {
@@ -22,6 +24,10 @@ const routes = [
             path: 'overview',
             index: true,
             element: <Overview />,
+          },
+          {
+            path: 'new-loan',
+            element: <LoanConfig />,
           },
           {
             path: 'test',

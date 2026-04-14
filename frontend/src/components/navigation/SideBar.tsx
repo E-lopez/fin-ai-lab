@@ -1,38 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
-const model = [
-  {
-    name: 'overview',
-    icon: 'bi-bar-chart-fill',
-    path: 'overview',
-  },
-  {
-    name: 'borrowers',
-    icon: 'bi-file-person-fill',
-    path: 'borrowers',
-  },
-  {
-    name: 'loans',
-    icon: 'bi-briefcase-fill',
-    path: 'loans',
-  },
-  {
-    name: 'recovery',
-    icon: 'bi-basket3-fill',
-    path: 'recovery',
-  },
-  {
-    name: 'calendar',
-    icon: 'bi-calendar3-week-fill',
-    path: 'calendar',
-  },
-  {
-    name: 'coms',
-    icon: 'bi-chat-right-quote-fill',
-    path: 'communications',
-  },
-];
+import sideBarButtons from "./sideButtons";
 
 const SideBar = () => {
   const [activeBtn, setActiveBtn ] = useState('overview');
@@ -42,7 +10,7 @@ const SideBar = () => {
         <div className="side-bar__btns">
           <p className="paragraph bold u-ml-10">Navigation</p>
           {
-            model.map((item) => (
+            sideBarButtons.map((item) => (
               <Link
                 key={item.path}
                 to={item.path} 

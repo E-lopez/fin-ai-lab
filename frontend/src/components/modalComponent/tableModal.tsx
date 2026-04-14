@@ -49,7 +49,7 @@ const TableModal = ({ action, loan }: {action: 'add' | 'edit'; loan: LoanSummary
   return(
     <div className="u-center-v">
       <h1 className="paragraph paragraph--lg">{action === 'add' ? 'Add payment' : 'Edit borrower'}</h1>
-      <p className="paragraph paragraph--sm">Borrower: {loan.borrower_name}</p>
+      <p className="paragraph paragraph--sm"><span className="bold">Borrower:</span> {(loan.borrower_name).replace('_', ' ')}</p>
       <FormFactory
         key={formVersion}
         base={addPayment}

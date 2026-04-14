@@ -1,5 +1,5 @@
 import { LoanSummary } from "@/models/dto/loanSummary";
-import { loansOverviewModelType } from "./initialMode";
+import { loansOverviewModelType, simulationType } from "./initialModel";
 
 export default function surveyReducer(
   loansState: loansOverviewModelType, 
@@ -7,8 +7,10 @@ export default function surveyReducer(
     type: string,
     loansOverview: LoanSummary[],
     isLoaded?: boolean,
+    simulation?: simulationType
   }
 ) {
+  console.log("INCOMING", action);
   switch(action.type) {
     case 'STORE_LOANS_OVERVIEW': {
       return {
@@ -21,6 +23,12 @@ export default function surveyReducer(
       return {
         ...loansState,
         isLoaded: action.isLoaded,
+      }
+    }
+    case 'STORE_SIMULATION': {
+      return {
+        ...loansState,
+        simulation: action.simulation,
       }
     }
     case 'RESET_DATA': {

@@ -9,7 +9,8 @@ type TFormfactory = {
   base: {[name:string]: any}, 
   rootCss?: string, 
   formMethod: (arg0: any) => void,
-  submitLabel?: string
+  submitLabel?: string,
+  resetOnSubmit?: boolean,
 }
 
 
@@ -17,7 +18,8 @@ const FormFactory = ({
   base, 
   rootCss = 'form-default', 
   formMethod, 
-  submitLabel='Enviar' 
+  submitLabel='Enviar',
+  resetOnSubmit = true,
 }: TFormfactory
 ) => {
   const [model, setModel] = useState<any>({});
@@ -67,7 +69,7 @@ const FormFactory = ({
     e.preventDefault();
     if(disableButton) return false;
     formMethod(model);
-    setModel({});
+    if(resetOnSubmit) setModel({});
   }
 
   useEffect(() => {

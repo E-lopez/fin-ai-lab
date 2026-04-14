@@ -1,0 +1,46 @@
+.loans {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 1rem;
+  width: 100%;
+
+  &__top {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    height: 40vh;
+  }
+
+  &__table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+
+    &-content {
+      width: 100%;
+      height: 100%;
+      min-height: 20vh;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+  }
+
+  &__form,
+  &__stats {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow-y: auto;
+    padding: 1rem;
+    scrollbar-width: none;
+  }
+
+}

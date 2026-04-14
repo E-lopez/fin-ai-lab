@@ -18,7 +18,7 @@ CREATE TABLE loans (
   principal DECIMAL(12,2) NOT NULL,
   interest_rate DECIMAL(7,4) NOT NULL, -- e.g., 0.05 for 5%
   amortization_type VARCHAR(30) NOT NULL, -- french, bullet, interest_only
-  payment_frequency VARCHAR(20) NOT NULL, -- monthly, quarterly, maturity
+  payment_frequency VARCHAR(20) NOT NULL, -- monthly, bimonthly, quarterly, semiannually, annually
   term_months INT NOT NULL,
   start_date DATE NOT NULL,
   status VARCHAR(20) DEFAULT 'active', -- late, default, finished

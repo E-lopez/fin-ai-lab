@@ -6,7 +6,7 @@ import {
   Reducer 
 } from "react";
 import loansReducer from "./LoansReducer";
-import { loansOverviewModel, loansOverviewModelType } from "./initialMode";
+import { loansOverviewModel, loansOverviewModelType } from "./initialModel";
 
 
 const LoansContext = createContext<loansOverviewModelType | null>(null);

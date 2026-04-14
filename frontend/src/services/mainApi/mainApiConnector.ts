@@ -1,4 +1,5 @@
 import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
+import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest";
 import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
 
 export default class MainApiConnector {
@@ -42,11 +43,15 @@ export default class MainApiConnector {
     }
   }
 
-  async getRepaymentPlan(payload: repaymentPlanRequest, access_token: string) {
+  async simulateLoanSchedule(payload: getLoanScheduleRequest) {
     try {
-      const response = await fetch(`${this.currentBaseUrl}/repayment-plan?token=${encodeURIComponent(access_token ?? '')}`, {
+      const response = await fetch(`${this.currentBaseUrl}/loan_schedules/simulate`, {
         mode: 'cors',
         method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
@@ -54,13 +59,13 @@ export default class MainApiConnector {
       }
       const json = await response.json();
       return json;
-      
+
     } catch (e: any) {
-      console.error('Amortization API error:', e);
+      console.error('Main API error:', e);
       const ex = await e.json()
       const errObject = {
         type: ex.name,
-        message: ex.message, 
+        message: ex.message,
       }
       throw errObject;
     }

@@ -24,24 +24,19 @@ const LoginModal = () => {
   const modalDispatch = useModalDispatch();
 
   const autheticateUser = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        tokenDispatch(
-          {
-            type: 'SAVE_TOKEN', 
-            payload: {
-              tokenData: {
-                access_token: 'some fake token'
-              }, 
-              userAuthenticated: true
-            }
-          }
-        );
-        modalDispatch({
-          type: 'HIDE_MODAL',
-        });
-        resolve(true);
-      }, 1000);
+    tokenDispatch(
+      {
+        type: 'SAVE_TOKEN', 
+        payload: {
+          tokenData: {
+            access_token: 'some fake token'
+          }, 
+          userAuthenticated: true
+        }
+      }
+    );
+    modalDispatch({
+      type: 'HIDE_MODAL',
     });
   };
 

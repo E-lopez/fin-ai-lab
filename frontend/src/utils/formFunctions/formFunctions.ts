@@ -1,4 +1,3 @@
-import { roundUpMinAmmount } from "../functions/currency";
 import { checkFileExtension } from "../functions/files";
 
 type Validator = (value: any, ...args: any) => void | boolean;
@@ -10,7 +9,7 @@ const textField = (val: string) => {
 }
 
 const numericField = (val: string) => {
-  const regex: RegExp = /^\d{5,10}$/;
+  const regex: RegExp = /^\d{4,10}$/;
   return regex.test(val);
 }
 

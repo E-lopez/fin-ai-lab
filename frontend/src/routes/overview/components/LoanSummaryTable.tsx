@@ -79,12 +79,8 @@ const LoanSummaryTable = () => {
                 <td>
                   <i className={`${loan.is_overdue ? "red" : "dark-green"} u-ml-4 bi-circle-fill`}></i>
                 </td>
-                <td 
-                  className={loan.is_overdue ? "overview-table__row--overdue" : ""}
-                >
-                  <a href={`/test/${loan.id}`}>
-                    {loan.borrower_name}
-                  </a>
+                <td>
+                  {loan.borrower_name}
                 </td>
                 <td>{loan.status}</td>
                 <td>{toCurrency(loan.amount)}</td>
