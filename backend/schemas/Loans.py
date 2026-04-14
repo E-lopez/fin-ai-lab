@@ -17,6 +17,18 @@ class LoanBase(SQLModel):
         sa_column=Column(String(20), server_default=text("'active'"), nullable=False)
     )
 
+    def __init__(self, **data):
+        if "interest_rate" in data and data["interest_rate"] is not None:
+            rate = Decimal(str(data["interest_rate"]))
+            if rate > 1:
+                rate = rate / Decimal("100")
+            data["interest_rate"] = rate
+
+        if "principal" in data and data["principal"] is not None:
+            data["principal"] = Decimal(str(data["principal"]))
+
+        super().__init__(**data)
+
 class Loan(LoanBase, table=True):
     __tablename__ = "loans"
     

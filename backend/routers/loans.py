@@ -95,6 +95,7 @@ async def get_loans_summary(
         select(
             Loan.id,
             Borrower.name.label("borrower_name"),
+            Borrower.id.label("borrower_id"),
             Loan.principal,
             Loan.status,
             Loan.start_date,
@@ -127,13 +128,14 @@ async def get_loans_summary(
             last_activity = row.last_payment_date or row.start_date
             days_since_payment = (today - last_activity).days
             
-            if days_since_payment > 31:
+            if days_since_payment > 29:
                 overdue_status = True
 
         summary_list.append(
             LoanSummary(
                 id=row.id,
                 borrower_name=row.borrower_name,
+                borrower_id=row.borrower_id,
                 amount=row.principal,
                 status=row.status,
                 start_date=row.start_date,

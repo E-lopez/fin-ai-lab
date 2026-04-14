@@ -8,6 +8,7 @@ class LoanSummary(BaseModel):
     # Basic Loan Info
     id: UUID
     borrower_name: str
+    borrower_id: UUID
     amount: Decimal
     status: str
     start_date: date
