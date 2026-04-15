@@ -2,7 +2,7 @@ export const loanScheduleFormModel: { [key: string]: any } = {
   principal: {
     type: 'NUMERIC',
     min: 1000,
-    max: 3000000,
+    max: 10000000,
     required: true,
     pattern: '[0-9]{6}',
     placeholder: 'amount',
@@ -12,7 +12,7 @@ export const loanScheduleFormModel: { [key: string]: any } = {
     type: 'NUMERIC',
     required: true,
     label: 'Interest Rate',
-    placeholder: '0.0',
+    placeholder: '24.36%',
     min: 0,
     step: 0.01,
   },
