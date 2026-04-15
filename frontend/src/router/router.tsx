@@ -17,29 +17,22 @@ const routes = [
     errorElement: <NotFound />,
     children: [
       {
-        path: '',
-        errorElement: <NotFound />,
-        children: [
-          {
-            path: 'overview',
-            index: true,
-            element: <Overview />,
-          },
-          {
-            path: 'new-loan',
-            element: <LoanConfig />,
-          },
-          {
-            path: 'test',
-            element: <Test />,
-          },
-          {
-            path: '*',
-            loader() {
-              throw new Response(null, { status: 404, statusText: 'Not found' })
-            }
-          }
-        ]
+        index: true,
+        element: <Overview />,
+      },
+      {
+        path: 'new-loan',
+        element: <LoanConfig />,
+      },
+      {
+        path: 'test',
+        element: <Test />,
+      },
+      {
+        path: '*',
+        loader() {
+          throw new Response(null, { status: 404, statusText: 'Not found' })
+        }
       }
     ]
   },

@@ -2,7 +2,7 @@ const sideBarButtons = [
   {
     name: 'overview',
     icon: 'bi-bar-chart-fill',
-    path: 'overview',
+    path: '/',
   },
   {
     name: 'Loans',
