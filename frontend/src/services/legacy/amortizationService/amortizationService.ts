@@ -1,4 +1,4 @@
-import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
+import { repaymentPlanRequest } from "@/models/dto/legacy/repaymentPlanRequest";
 import AmortizationApiConnector from "./amortizationApiConnector";
 
 class AmortizationFacade {

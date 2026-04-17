@@ -1,5 +1,5 @@
-import { agreementModelRequest } from "@/models/dto/agreementModelRequest";
-import { surveyModelRequest } from "@/models/dto/surveyModelRequest";
+import { agreementModelRequest } from "@/models/dto/legacy/agreementModelRequest";
+import { surveyModelRequest } from "@/models/dto/legacy/surveyModelRequest";
 
 export default class SurveyApiConnector {
   static readonly lambda_url: string = import.meta.env.VITE_SURVEY_LAMBDA_URL;

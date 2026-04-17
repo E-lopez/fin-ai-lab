@@ -1,6 +1,6 @@
-import { User } from "@/models/dto/user";
+import { User } from "@/models/dto/legacy/user";
 import UserApiConnector from "./userApiConnector";
-import { UpdateUserRiskRequest } from "@/models/dto/UpdateUserRiskRequest";
+import { UpdateUserRiskRequest } from "@/models/dto/legacy/UpdateUserRiskRequest";
 
 class UserFacade {
   connector: UserApiConnector;

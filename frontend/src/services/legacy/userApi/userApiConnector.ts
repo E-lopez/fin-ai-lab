@@ -1,5 +1,5 @@
-import { UpdateUserRiskRequest } from "@/models/dto/UpdateUserRiskRequest";
-import { User } from "@/models/dto/user";
+import { UpdateUserRiskRequest } from "@/models/dto/legacy/UpdateUserRiskRequest";
+import { User } from "@/models/dto/legacy/user";
 
 export default class UserApiConnector {
   static readonly lambda_url: string = import.meta.env.VITE_USER_LAMBDA_URL;

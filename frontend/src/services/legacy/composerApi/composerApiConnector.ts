@@ -1,4 +1,4 @@
-import { UserInit } from "@/models/dto/UserInit";
+import { UserInit } from "@/models/dto/legacy/UserInit";
 
 export default class ComposerApiConnector {
   static readonly baseUrl: string = 'http://localhost:8080/composer';

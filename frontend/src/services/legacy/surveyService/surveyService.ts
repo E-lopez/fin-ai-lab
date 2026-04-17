@@ -1,6 +1,6 @@
-import { surveyModelRequest } from "@/models/dto/surveyModelRequest";
+import { surveyModelRequest } from "@/models/dto/legacy/surveyModelRequest";
 import SurveyApiConnector from "./surveyApiConnector";
-import { agreementModelRequest } from "@/models/dto/agreementModelRequest";
+import { agreementModelRequest } from "@/models/dto/legacy/agreementModelRequest";
 
 class SurveyFacade {
   connector: SurveyApiConnector;

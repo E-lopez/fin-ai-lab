@@ -1,4 +1,4 @@
-import { Files } from "@/models/dto/file";
+import { Files } from "@/models/dto/legacy/file";
 
 export const getFilesUploadDto = (
   model: { [s: string]: unknown; } | ArrayLike<unknown>, 

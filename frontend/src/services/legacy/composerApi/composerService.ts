@@ -1,4 +1,4 @@
-import { UserInit } from "@/models/dto/UserInit";
+import { UserInit } from "@/models/dto/legacy/UserInit";
 import ComposerApiConnector from "./composerApiConnector";
 
 class ComposerFacade {

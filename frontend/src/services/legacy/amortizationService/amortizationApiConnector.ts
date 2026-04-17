@@ -1,4 +1,4 @@
-import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
+import { repaymentPlanRequest } from "@/models/dto/legacy/repaymentPlanRequest";
 
 export default class AmortizationApiConnector {
   static readonly baseUrl: string = import.meta.env.VITE_SCORE_LAMBDA_URL;

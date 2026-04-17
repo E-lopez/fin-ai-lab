@@ -1,8 +1,8 @@
 import DataErrors from "@/constants/DataErrors";
-import { CreateUserRequest, ScoringData } from "@/models/dto/CreateUserRequest";
-import { ScoreResponse } from "@/models/dto/ScoreResponse";
-import { UpdateUserRiskRequest } from "@/models/dto/UpdateUserRiskRequest";
-import { User, UserApiResponse } from "@/models/dto/user";
+import { CreateUserRequest, ScoringData } from "@/models/dto/legacy/CreateUserRequest";
+import { ScoreResponse } from "@/models/dto/legacy/ScoreResponse";
+import { UpdateUserRiskRequest } from "@/models/dto/legacy/UpdateUserRiskRequest";
+import { User, UserApiResponse } from "@/models/dto/legacy/user";
 import { UserService } from "@/services/legacy/userApi/userService";
 
 import { useAlertDispatch } from "@/stores/alerts/AlertsStore";

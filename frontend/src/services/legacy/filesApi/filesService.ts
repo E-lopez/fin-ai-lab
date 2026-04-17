@@ -1,5 +1,5 @@
 import FilesApiConnector from "./filesApiConnector";
-import { FilesUploadRequestPayload } from "@/models/dto/filesUploadRequest";
+import { FilesUploadRequestPayload } from "@/models/dto/legacy/filesUploadRequest";
 
 class FilesFacade {
   connector: FilesApiConnector;

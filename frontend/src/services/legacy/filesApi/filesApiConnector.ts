@@ -1,4 +1,4 @@
-import { FilesUploadRequestPayload } from "@/models/dto/filesUploadRequest";
+import { FilesUploadRequestPayload } from "@/models/dto/legacy/filesUploadRequest";
 
 export default class FilesApiConnector {
   static readonly lambda_url: string = import.meta.env.VITE_FILE_LAMBDA_URL;
