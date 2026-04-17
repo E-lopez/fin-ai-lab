@@ -14,4 +14,10 @@ export const calculateLoanSummary = (data: any[]) => {
 
 export const roundUpMinAmmount = (baseValue: number) => {
   return Math.ceil(baseValue/1000/36)*1000;
-}
+};
+
+export const sumColumn = (rows: any[], col: string): number =>
+  rows.reduce((acc, row) => acc + Number(row[col]), 0);
+
+export const calcTotalValue = (principal: number, fees: number, interest: number): number =>
+  principal + fees + interest;

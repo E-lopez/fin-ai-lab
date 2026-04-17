@@ -1,0 +1,22 @@
+.stats {
+  display: flex;
+
+  &__table {
+    padding-top: 5%;
+
+    p {
+      @extend .label;
+      min-width: 30rem;
+      padding: 1rem 2rem;
+      
+      span {
+        color: $pale-blue;
+      }
+    }
+  
+    p:nth-of-type(odd) {
+      background-color: lightgrey;
+    }
+  }
+  
+}

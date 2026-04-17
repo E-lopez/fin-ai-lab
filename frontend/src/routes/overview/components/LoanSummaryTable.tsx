@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LoanSummary } from "@/models/dto/loanSummary";
 import { toCurrency } from "@/utils/functions/currency";
 import { useLoansState } from "@/stores/loans/LoansStore";
-import TableModal from "@/components/modalComponent/tableModal";
+import TableModal from "@/routes/overview/components/tableModal";
 import { useModalDispatch } from "@/stores/modals/ModalStore";
 
 

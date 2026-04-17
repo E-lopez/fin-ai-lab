@@ -1,16 +1,28 @@
 interface DateTimeOptions {
   year?: 'numeric' | '2-digit';
   month?: 'numeric' | '2-digit' | 'long' | 'short';
+  day?: 'numeric' | '2-digit';
 }
 
-export function monthYearFormat(value: string) {
-  const date = new Date(value);
+export function monthYearFormat(value?: string) {
+  const date = new Date(value || Date.now());
   if (Number.isNaN(date.getTime())) {
     return value; // Return original value if invalid date
   }
   const options: DateTimeOptions = {
     year: 'numeric', 
     month: 'short',
+  };
+  const dateTimeFormat = new Intl.DateTimeFormat("es-ES", options);
+  return dateTimeFormat.format(date);
+}
+
+export function dateNowLocale() {
+  const date = new Date();
+  const options: DateTimeOptions = {
+    year: 'numeric', 
+    month: 'short',
+    day: 'numeric',
   };
   const dateTimeFormat = new Intl.DateTimeFormat("es-ES", options);
   return dateTimeFormat.format(date);

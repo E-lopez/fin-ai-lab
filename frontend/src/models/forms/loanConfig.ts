@@ -26,7 +26,7 @@ export const loanScheduleFormModel: { [key: string]: any } = {
     type: 'DROPDOWN',
     required: true,
     label: 'Payment Frequency',
-    options: ['monthly', 'bimonthly', 'quarterly', 'semiannually', 'annually'],
+    options: ['monthly', 'bimonthly', 'quarterly', 'semiannually', 'annually', 'maturity'],
   },
   term_months: {
     type: 'NUMERIC',

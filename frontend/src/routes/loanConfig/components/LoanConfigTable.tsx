@@ -1,19 +1,38 @@
+import { forwardRef, useEffect } from "react";
 import { scheduleRow } from "@/models/types/scheduleRow";
 import { useLoansState } from "@/stores/loans/LoansStore";
-import { toCurrency } from "@/utils/functions/currency";
-import { useEffect } from "react";
+import {
+  toCurrency,
+  sumColumn,
+  calcTotalValue
+} from "@/utils/functions/currency";
 
-const LoanConfigTable = () => {
-  const [ loansState ] = useLoansState();
+const LoanConfigTable = forwardRef<HTMLTableElement, any>((props, ref) => {
+  const [ loansState, loansDispatch ] = useLoansState();
 
   const { schedule } = loansState.simulation || [];
 
   useEffect(() => {
-    console.log('Mounting LoanConfigTable', loansState.simulation);
-  }, [loansState.simulation])
+    const schedule: scheduleRow[] = loansState.simulation?.schedule ?? [];
+    if (!schedule.length) return;
+
+    const totalPrincipal = sumColumn(schedule, 'scheduled_principal');
+    const totalInterest = sumColumn(schedule, 'scheduled_interest');
+    const totalFees = sumColumn(schedule, 'scheduled_fees');
+
+    const total_cost = totalFees + totalInterest
+    const profit = total_cost/totalPrincipal*100;
+    const yieldRate = profit*(12/schedule.length);
+    const value = calcTotalValue(totalPrincipal, totalFees, totalInterest);
+
+    loansDispatch({
+      type: 'STORE_STATS',
+      stats: { profit, yield_rate: yieldRate, value, total_cost },
+    });
+  }, [loansState.simulation?.schedule]);
 
   return(
-    <div className="u-center-v">
+    <div className="u-center-v" ref={ref as any}>
       <h1 className="paragraph">Loan Simulation</h1>
       <div className="overview-table overview-table__scroll">
         <table>
@@ -43,6 +62,6 @@ const LoanConfigTable = () => {
       </div>
     </div>
   )
-}
+});
 
 export default LoanConfigTable;

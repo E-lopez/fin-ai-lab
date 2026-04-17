@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FormFactory from "../formComponent/formFactory";
+import FormFactory from "../../../components/formComponent/formFactory";
 import { addPayment } from "@/models/forms/addPaymentModal";
 import { MainApiService } from "@/services/mainApi/mainService";
 import { LoanSummary } from "@/models/dto/loanSummary";

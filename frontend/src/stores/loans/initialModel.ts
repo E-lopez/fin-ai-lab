@@ -7,10 +7,18 @@ export type simulationType = {
   schedule: scheduleRow[],
 }
 
+export type statsType = {
+  profit: number,
+  yield_rate: number,
+  value: number,
+  total_cost: number,
+}
+
 export type loansOverviewModelType = {
   loansOverview?: LoanSummary[],
   isLoaded?: boolean,
-  simulation?: simulationType
+  simulation?: simulationType,
+  stats?: statsType,
 }
 
 export const loansOverviewModel: loansOverviewModelType = {
@@ -27,5 +35,11 @@ export const loansOverviewModel: loansOverviewModelType = {
       id: ""
     },
     schedule: [],
+  },
+  stats: {
+    profit: 0,
+    yield_rate: 0,
+    value: 0,
+    total_cost: 0,
   }
 }

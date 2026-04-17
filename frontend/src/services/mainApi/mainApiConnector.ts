@@ -1,6 +1,6 @@
 import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
 import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest";
-import { repaymentPlanRequest } from "@/models/dto/repaymentPlanRequest";
+import { repaymentPlanRequest } from "@/models/dto/legacy/repaymentPlanRequest";
 
 export default class MainApiConnector {
   static readonly baseUrl: string = import.meta.env.VITE_API_URL;
