@@ -44,5 +44,27 @@
   &__button:hover {
     background-color: $bright-yellow;
   }
+
+  &--overview-filters {
+    button {
+      background-color: #000;
+      color: #fff;
+      width: 100%;
+      font-size: 1.2rem;
+
+      &:hover {
+        background-color: $pale-blue;
+      }
+    }
+
+    &--active {
+      button {
+        color: #fff;
+        width: 100%;
+        font-size: 1.2rem;
+        background-color: $pale-blue;
+      }
+    }
+  }
   
 }

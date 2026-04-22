@@ -27,13 +27,9 @@ const RotatingCircles: React.FC = () => {
 const LoadingIndicator = ({type, legend}: {type?: string, legend?: string}) => {
   switch(type) {
     case 'circles':
-      return <div className='survey survey__loader'><RotatingCircles /></div>;
+      return <RotatingCircles />;
     default:
-      return (
-        <div className='survey survey__loader'>
-          <LineDots legend={legend} />
-        </div>
-      )
+      return <LineDots legend={legend} />;
   }
 }
 

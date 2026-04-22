@@ -26,17 +26,15 @@ const AlertComponent = () => {
   }
 
   const getMessage = () => {
-    if(!alerts || !alerts[0]) return;
+    if(!alerts?.[0]) return;
     const { message, type, data } = alerts[0];
     const clearOutTime = data ? 6000 : 3000;
     setAlert((prevAlert) => {
       return {
         ...prevAlert,
-        ...{
-          message,
-          type,
-          data,
-        },
+        message,
+        type,
+        data,
         visible: true,
       }
     });
@@ -56,7 +54,7 @@ const AlertComponent = () => {
           {alertHeaders[alert.type as keyof typeof alertHeaders] || 'Atención'}
         </h3>
         <p className="alert__message">
-          { alert.message || 'Unkown error' }
+          { alert.message ?? 'Unkown error' }
         </p>
         { alert.data && 
           <p className="alert__message">
@@ -68,7 +66,7 @@ const AlertComponent = () => {
         className="alert__close-button"
         onClick={clearAlert}
       >
-        -
+        x
       </div>
     </div>
   )

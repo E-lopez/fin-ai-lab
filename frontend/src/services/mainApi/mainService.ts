@@ -1,6 +1,8 @@
 import AmortizationApiConnector from "./mainApiConnector";
 import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
-import { getLoanScheduleRequest } from "@/models/dto/createLoanRequest";
+import { FullLoanOnboardingRequest } from "@/models/dto/fullLoanOnboardingRequest";
+import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest";
+
 
 class MainApiServiceFacade {
   connector: AmortizationApiConnector;
@@ -19,6 +21,14 @@ class MainApiServiceFacade {
 
   simulateLoanSchedule(payload: getLoanScheduleRequest) {
     return this.connector.simulateLoanSchedule(payload);
+  }
+
+  onboardingFullLoan(payload: FullLoanOnboardingRequest) {
+    return this.connector.onboardingFullLoan(payload);
+  }
+
+  disburseLoan(loan_id: string) {
+    return this.connector.disburseLoan(loan_id);
   }
 
 }

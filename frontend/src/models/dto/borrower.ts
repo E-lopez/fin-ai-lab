@@ -4,3 +4,8 @@ export interface Borrower {
   gender: string,
   orgName: string
 };
+
+export interface BorrowerResponse extends Borrower {
+  id: string
+  created_at: string
+};

@@ -1,7 +1,42 @@
 @import '../routesComponents/overview/overviewTable';
 
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-left: 1rem;
+  width: 100%;
+}
+
 .overview-container {
   width: 100%;
   background-color: #fff;
   border-radius: 10px;
+}
+
+.overview-header {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  height: 15vh;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 100%;
+    
+    p {
+      margin: 0 !important;
+    }
+    
+    &--single {
+      background-color: #fff;
+    }
+    &--multiple {
+      background-color: rgba($pale-green, .75);
+    }
+  }
 }

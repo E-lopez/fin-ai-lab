@@ -21,7 +21,7 @@ export default function alertReducer(
       return alerts.filter((e: { name: string; }) => e.name !== action.name)
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw new Error('Unknown action: ' + action.type);
     }
   }
 }

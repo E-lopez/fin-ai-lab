@@ -21,3 +21,16 @@ export const sumColumn = (rows: any[], col: string): number =>
 
 export const calcTotalValue = (principal: number, fees: number, interest: number): number =>
   principal + fees + interest;
+
+import { LoanSummary } from "@/models/dto/loanSummary";
+
+export const filterLoans = (loans: LoanSummary[], filter: string): LoanSummary[] =>
+  filter === 'active' ? loans.filter((l) => l.status === 'active') : loans;
+
+export const sumLoansField = (loans: LoanSummary[], field: keyof LoanSummary): number =>
+  loans.reduce((acc, loan) => acc + Number(loan[field]), 0);
+
+export const calcProfitability = (disbursed: number, repaid: number) => ({
+  ratio: disbursed > 0 ? repaid / disbursed : 0,
+  net: repaid - disbursed,
+});

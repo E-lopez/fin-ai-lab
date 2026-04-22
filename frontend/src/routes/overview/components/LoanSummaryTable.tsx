@@ -4,12 +4,15 @@ import { toCurrency } from "@/utils/functions/currency";
 import { useLoansState } from "@/stores/loans/LoansStore";
 import TableModal from "@/routes/overview/components/tableModal";
 import { useModalDispatch } from "@/stores/modals/ModalStore";
+import { useAlertDispatch } from "@/stores/alerts/AlertsStore";
+import { MainApiService } from "@/services/mainApi/mainService";
 
 
 const LoanSummaryTable = () => {
   const [statusFilter, setStatusFilter] = useState("active");
-  const [loansState] = useLoansState();
+  const [loansState, loansDispatch] = useLoansState();
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const statuses = ["all", ...Array.from(
     new Set<string>(loansState.loansOverview.map((d: LoanSummary) => d.status)))
@@ -27,6 +30,29 @@ const LoanSummaryTable = () => {
     })
   }
 
+  const disburseLoan = (loanId: string) => { 
+    MainApiService.disburseLoan(loanId)
+    .then(() => {
+      loansDispatch({
+        type: "SYNC_LOANS_OVERVIEW",
+        isLoaded: false,
+      });
+        alertDispatch({
+        type: 'SET_ALERT',
+        alertType: 'success',
+        message: `Loan ${loanId} disbursed successfully!`,
+      });
+    })
+    .catch((error: any) => {
+      console.error("ERROR ADDING PAYMENT:", error);
+        alertDispatch({
+        type: 'SET_ALERT',
+        alertType: 'error',
+        message: `Loan ${loanId} disbursed failed!`,
+      });
+    });
+  };
+
   const handleRowAction = (loan: LoanSummary, action: string) => {
     switch(action) {
       case "add": {
@@ -37,6 +63,11 @@ const LoanSummaryTable = () => {
       case "edit": {
         console.log("EDIT LOAN ID:", loan);
         showModal(action, loan);
+        break;
+      }
+      case "disburse": {
+        console.log("DISBURSE LOAN ID:", loan);
+        disburseLoan(loan.id);
         break;
       }
       default: {
@@ -91,11 +122,20 @@ const LoanSummaryTable = () => {
                 <td>{loan.next_payment_date || 'n/a'}</td>
                 <td>{loan.days_since_payment}</td>
                 <td className="overview-table__row-buttons">
-                  <button 
-                    className="blue"
-                    onClick={() => handleRowAction(loan, "add")} >
-                     <i className="bi-plus-circle-fill"></i>
-                  </button>
+                  {loan.status === 'pending' ? (
+                      <button 
+                        className="dark-green"
+                        onClick={() => handleRowAction(loan, "disburse")} >
+                        <i className="bi-play-circle-fill"></i>
+                      </button>
+                    ) : (
+                      <button 
+                        className="blue"
+                        onClick={() => handleRowAction(loan, "add")} >
+                        <i className="bi-plus-circle-fill"></i>
+                      </button>
+                    )
+                  }
                 </td>
               </tr>
             ))}
