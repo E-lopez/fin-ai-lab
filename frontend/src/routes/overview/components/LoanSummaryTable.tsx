@@ -6,6 +6,7 @@ import TableModal from "@/routes/overview/components/tableModal";
 import { useModalDispatch } from "@/stores/modals/ModalStore";
 import { useAlertDispatch } from "@/stores/alerts/AlertsStore";
 import { MainApiService } from "@/services/mainApi/mainService";
+import { Link } from "react-router-dom";
 
 
 const LoanSummaryTable = () => {
@@ -111,7 +112,9 @@ const LoanSummaryTable = () => {
                   <i className={`${loan.is_overdue ? "red" : "dark-green"} u-ml-4 bi-circle-fill`}></i>
                 </td>
                 <td>
-                  {loan.borrower_name}
+                  <Link to='/loan-payments' state={{ loanId: loan.id }} className="blue">
+                    {loan.borrower_name}
+                  </Link>
                 </td>
                 <td>{loan.status}</td>
                 <td>{toCurrency(loan.amount)}</td>

@@ -6,6 +6,8 @@ import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest";
 import ApiError from "./apiError";
 import { LoanSummary } from "@/models/dto/loanSummary";
 import { FullLoanOnboardingRequest } from "@/models/dto/fullLoanOnboardingRequest";
+import { Payment } from "@/models/dto/payment";
+import { PaymentAllocation } from "@/models/dto/paymentAllocation";
 
 export default class MainApiConnector {
   static readonly baseUrl: string = import.meta.env.VITE_API_URL;
@@ -110,5 +112,13 @@ export default class MainApiConnector {
     return this.request(`/loans/${loan_id}/disburse`, {
       method: 'POST',
     });
+  }
+
+  async getPaymentsByLoanId(loan_id: string): Promise<Payment[]> {
+    return this.request(`/payments/loan/${loan_id}`);
+  }
+
+  async getPaymentAllocation(payment_id: string): Promise<PaymentAllocation[]> {
+    return this.request(`/payment_allocations/payment/${payment_id}`);
   }
 }

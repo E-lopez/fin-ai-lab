@@ -51,7 +51,7 @@ const OverviewHeader = () => {
         >
           <p className="paragraph paragraph--sm bold">{item.name}</p>
           <p className="paragraph paragraph--sm">{item.display}</p>
-          {item.display_sec && <p className="paragraph paragraph--sm">{item.display_sec}</p>}
+          {item.display_sec && <p className="paragraph paragraph--xs">{item.display_sec}</p>}
         </div>
       ))}
     </div>

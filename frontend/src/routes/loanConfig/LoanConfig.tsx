@@ -4,15 +4,12 @@ import { toPng } from 'html-to-image';
 import LoanConfigForm from "./components/LoanConfigForm";
 import LoanConfigTable from "./components/LoanConfigTable";
 import LoanStats from "./components/LoanStats";
-import TableModal from "@/routes/overview/components/tableModal";
 import { dateNowLocale } from "@/utils/functions/dataTime";
-import { useLoansState } from '@/stores/loans/LoansStore';
 import { useModalDispatch } from "@/stores/modals/ModalStore";
 import CreateLoanModal from './components/CreateLoanModal';
 
 
 const LoanConfig = () => {   
-  const [loansState] = useLoansState();
   const modalDispatch = useModalDispatch();
   const tableRef = useRef(null);
 
@@ -35,10 +32,6 @@ const LoanConfig = () => {
         link.click();
       })
       .catch((err) => console.error(err));
-  };
-
-  const recordLoan = () => {
-    console.log("RECORD LOAN", loansState);
   };
 
   return(

@@ -12,6 +12,7 @@ export function monthYearFormat(value?: string) {
   const options: DateTimeOptions = {
     year: 'numeric', 
     month: 'short',
+    day: 'numeric',
   };
   const dateTimeFormat = new Intl.DateTimeFormat("es-ES", options);
   return dateTimeFormat.format(date);

@@ -2,6 +2,7 @@ import AmortizationApiConnector from "./mainApiConnector";
 import { addPaymentRequest } from "@/models/dto/addPaymentRequest";
 import { FullLoanOnboardingRequest } from "@/models/dto/fullLoanOnboardingRequest";
 import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest";
+import { Payment } from "@/models/dto/payment";
 
 
 class MainApiServiceFacade {
@@ -29,6 +30,14 @@ class MainApiServiceFacade {
 
   disburseLoan(loan_id: string) {
     return this.connector.disburseLoan(loan_id);
+  }
+
+  getPaymentsByLoanId(loan_id: string): Promise<Payment[]> {
+    return this.connector.getPaymentsByLoanId(loan_id);
+  }
+
+  getPaymentAllocation(payment_id: string) {
+    return this.connector.getPaymentAllocation(payment_id);
   }
 
 }

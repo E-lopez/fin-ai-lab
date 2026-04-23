@@ -4,12 +4,14 @@ import {
   simulationType,
   statsType
 } from "./initialModel";
+import { Payment } from "@/models/dto/payment";
 
 export default function surveyReducer(
   loansState: loansOverviewModelType, 
   action: { 
     type: string,
     loansOverview: LoanSummary[],
+    loanPayments: Payment[],
     isLoaded?: boolean,
     simulation?: simulationType,
     stats?: statsType,
@@ -40,13 +42,19 @@ export default function surveyReducer(
       return {
         ...loansState,
         stats: action.stats
-
+      }
+    }
+    case 'STORE_LOAN_PAYMENTS': {
+      return {
+        ...loansState,
+        loanPayments: action.loanPayments,
       }
     }
     case 'RESET_DATA': {
       return {
         ...loansState,
         loansOverview: [],
+        loanPayments: [],
       }
     }
     default: {
