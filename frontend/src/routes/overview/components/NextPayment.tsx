@@ -14,7 +14,6 @@ const NextPayment = ({ borrowerId }: { borrowerId: string }) => {
   useEffect(() => {
       MainApiService.getNextPayment(borrowerId)
         .then((data: NextPaymentType | null) => {
-          console.log("Next payment data:", data);
           if (data) {
             setPayment({
               ...payment,

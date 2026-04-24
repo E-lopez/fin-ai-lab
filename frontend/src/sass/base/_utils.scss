@@ -17,6 +17,10 @@
   overflow-y: auto;
 }
 
+.u-overflow-x-off {
+  overflow-x: hidden;
+}
+
 // Text aligns
 .u-center-text { text-align: center; }
 .u-right-text { text-align: right; }
