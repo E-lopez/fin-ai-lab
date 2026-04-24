@@ -5,6 +5,7 @@ import { MainApiService } from "@/services/mainApi/mainService";
 import { LoanSummary } from "@/models/dto/loanSummary";
 import { useLoansDispatch } from "@/stores/loans/LoansStore";
 import { getTodayDate } from "@/utils/functions/dataTime";
+import NextPayment from "./NextPayment";
 
 const SuccessView = () => (
    <div className="u-center-v">
@@ -23,7 +24,6 @@ const TableModal = ({ action, loan }: {action: 'add' | 'edit'; loan: LoanSummary
   const [formVersion] = useState(0);
   const loansDispatch = useLoansDispatch();
   
-
   const savePayment = (data: any) => {
     const today = getTodayDate();    
     MainApiService.addPayment({
@@ -50,6 +50,7 @@ const TableModal = ({ action, loan }: {action: 'add' | 'edit'; loan: LoanSummary
     <div className="u-center-v">
       <h1 className="paragraph paragraph--lg">{action === 'add' ? 'Add payment' : 'Edit borrower'}</h1>
       <p className="paragraph paragraph--sm"><span className="bold">Borrower:</span> {(loan.borrower_name).replace('_', ' ')}</p>
+      <NextPayment borrowerId={loan.borrower_id} />
       <FormFactory
         key={formVersion}
         base={addPayment}

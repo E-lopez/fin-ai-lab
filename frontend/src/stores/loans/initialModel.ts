@@ -1,3 +1,4 @@
+import { BorrowerResponse } from "@/models/dto/borrower"
 import { getLoanScheduleRequest } from "@/models/dto/getLoanScheduleRequest"
 import { LoanSummary } from "@/models/dto/loanSummary"
 import { Payment } from "@/models/dto/payment"
@@ -18,6 +19,7 @@ export type statsType = {
 export type loansOverviewModelType = {
   loansOverview?: LoanSummary[],
   loanPayments?: Payment[],
+  borrowers?: BorrowerResponse[],
   isLoaded?: boolean,
   simulation?: simulationType,
   stats?: statsType,
@@ -27,6 +29,7 @@ export const loansOverviewModel: loansOverviewModelType = {
   loansOverview: [],
   loanPayments: [],
   isLoaded: false,
+  borrowers: [],
   simulation: {
     data: {
       principal: 0,

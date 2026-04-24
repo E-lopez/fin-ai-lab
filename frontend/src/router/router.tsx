@@ -9,6 +9,7 @@ import Overview from '@/routes/overview/Overview';
 import Test from '@/routes/test/test';
 import LoanConfig from '@/routes/loanConfig/LoanConfig';
 import LoanPayments from '@/routes/loanPayments/loanPayments';
+import BorrowersView from '@/routes/borrowers/borrowersView';
 
 
 const routes = [
@@ -28,6 +29,10 @@ const routes = [
       {
         path: 'loan-payments',
         element: <LoanPayments />
+      },
+      {
+        path: 'borrowers',
+        element: <BorrowersView />
       },
       {
         path: 'test',

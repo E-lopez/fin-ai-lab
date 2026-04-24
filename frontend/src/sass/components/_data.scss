@@ -5,7 +5,8 @@
   margin: .5rem 0;
   width: 35rem;
 
-  p {
+  p, h2 {
+    @extend .paragraph;
     line-height: 1.25rem;
   }
 }

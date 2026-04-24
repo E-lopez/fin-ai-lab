@@ -1,22 +1,20 @@
 import LoadingIndicator from "@/components/loaderComponent/LoaderComponent";
-import { Payment } from "@/models/dto/payment";
 import { MainApiService } from "@/services/mainApi/mainService";
 import { useLoansState } from "@/stores/loans/LoansStore";
 import { useModalDispatch } from "@/stores/modals/ModalStore";
 import { monthYearFormat } from "@/utils/functions/dataTime";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import AllocationModal from "./components/AllocationModal";
+import AllocationModal from "./components/BorrowersModal";
+import { BorrowerResponse } from "@/models/dto/borrower";
 
-const LoanPayments = () => {
+const BorrowersView = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
   const [loansState, loansDispatch] = useLoansState();
   const modalDispatch = useModalDispatch();
-  const location = useLocation();
-  const { loanId } = location.state || {};
-  const { loanPayments } = loansState;
+
 
   const handleRowAction = (paymentId: string) => {
+
     modalDispatch({
       type: 'SHOW_MODAL',
       content: <AllocationModal paymentId={paymentId} />,
@@ -25,19 +23,24 @@ const LoanPayments = () => {
   }
 
   useEffect(() => {
-    MainApiService.getPaymentsByLoanId(loanId)
-      .then((data: Payment[]) => {
+    if(loansState.borrowers.length > 0) {
+      setStatus('idle');
+      return;
+    }
+    MainApiService.getBorrowers()
+      .then((data: BorrowerResponse[]) => {
         loansDispatch({
-          type: "STORE_LOAN_PAYMENTS",
-          loanPayments: data,
+          type: "STORE_BORROWERS",
+          borrowers: data,
         })
+        console.log("Borrowers data:", data);
         setStatus('idle');
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error("ERROR FETCHING SUMMARY:", error);
         setStatus('error');
       });
-  }, [loanId]);
+  }, [loansState.borrowers]);
 
   return(
     <div className="overview-container">
@@ -49,23 +52,27 @@ const LoanPayments = () => {
             <thead>
               <tr>
                 <th>id</th>
-                <th>amount</th>
-                <th>date</th>
+                <th>name</th>
+                <th>email</th>
+                <th>gender</th>
+                <th>org name</th>
                 <th>created at</th>
-                <th>action</th>
+                <th>edit</th>
               </tr>
             </thead>
             <tbody>
-              {loanPayments.map((payment: Payment, index: number) => (
-                <tr key={payment.id} >
-                  <td>{index}</td>
-                  <td>{payment.paid_amount}</td>
-                  <td>{monthYearFormat(payment.payment_date)}</td>
-                  <td>{monthYearFormat(payment.created_at)}</td>
+              {loansState.borrowers.map((borrower: BorrowerResponse, index: number) => (
+                <tr key={borrower.id} >
+                  <td>{index+1}</td>
+                  <td>{borrower.name}</td>
+                  <td>{borrower.email}</td>
+                  <td>{borrower.gender}</td>
+                  <td>{borrower.orgName}</td>
+                  <td>{monthYearFormat(borrower.created_at)}</td>
                   <td className="overview-table__row-buttons">
                     <button 
                       className="dark-green"
-                      onClick={() => handleRowAction(payment.id)} >
+                      onClick={() => handleRowAction(borrower.id)} >
                       <i className="bi-info-circle-fill"></i>
                     </button>
                   </td>
@@ -79,4 +86,4 @@ const LoanPayments = () => {
   )
 }
 
-export default LoanPayments;
+export default BorrowersView;

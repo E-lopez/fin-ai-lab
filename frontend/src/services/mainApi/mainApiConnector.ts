@@ -8,6 +8,7 @@ import { LoanSummary } from "@/models/dto/loanSummary";
 import { FullLoanOnboardingRequest } from "@/models/dto/fullLoanOnboardingRequest";
 import { Payment } from "@/models/dto/payment";
 import { PaymentAllocation } from "@/models/dto/paymentAllocation";
+import { NextPaymentType } from "@/models/dto/nextPaymentType";
 
 export default class MainApiConnector {
   static readonly baseUrl: string = import.meta.env.VITE_API_URL;
@@ -120,5 +121,13 @@ export default class MainApiConnector {
 
   async getPaymentAllocation(payment_id: string): Promise<PaymentAllocation[]> {
     return this.request(`/payment_allocations/payment/${payment_id}`);
+  }
+
+  async getBorrowers(): Promise<BorrowerResponse[]> {
+    return this.request('/borrowers');
+  }
+
+  async getNextPayment(borrowerId: string): Promise<NextPaymentType | null> {
+    return this.request(`/borrowers/${borrowerId}/next-payment`);
   }
 }

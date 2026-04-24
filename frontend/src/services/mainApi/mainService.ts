@@ -40,6 +40,14 @@ class MainApiServiceFacade {
     return this.connector.getPaymentAllocation(payment_id);
   }
 
+  getBorrowers() {
+    return this.connector.getBorrowers();
+  }
+
+  getNextPayment(borrowerId: string) {
+    return this.connector.getNextPayment(borrowerId);
+  }
+
 }
 
 export const MainApiService = new MainApiServiceFacade(AmortizationApiConnector);
