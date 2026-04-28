@@ -7,9 +7,11 @@ from decimal import Decimal
 from datetime import date, datetime
 
 from dependencies.db_client import get_session
+from dependencies.auth import get_current_user
 from schemas.Payments import Payment, PaymentRead, PaymentCreate
 from schemas.Payment_allocations import PaymentAllocation, PaymentAllocationCreate
 from schemas.Loan_schedule import LoanSchedule
+from schemas.Users import User
 from functions.date_utils import calculate_days_until
 
 router = APIRouter(
@@ -21,7 +23,8 @@ router = APIRouter(
 @router.get("/loan/{loan_id}", response_model=list[PaymentRead])
 async def get_payments_by_loan_id(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     statement = select(Payment).where(Payment.loan_id == loan_id).order_by(Payment.payment_date)
     results = session.exec(statement).all()
@@ -30,7 +33,8 @@ async def get_payments_by_loan_id(
 @router.get("/loan/{loan_id}/next-due-date")
 async def get_next_payment_due_date(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     today = date.today()
     
@@ -56,7 +60,8 @@ async def get_next_payment_due_date(
 @router.get("/loan/{loan_id}/days-to-due-date")
 async def get_days_to_payment_due_date(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     today = date.today()
     
@@ -85,7 +90,8 @@ async def get_days_to_payment_due_date(
 @router.get("/stats/daily")
 async def get_daily_payment_stats(
     target_date: Optional[date] = None,
-    session: Annotated[Session, Depends(get_session)] = None
+    session: Annotated[Session, Depends(get_session)] = None,
+    current_user: Annotated[User, Depends(get_current_user)] = None
 ):
     if target_date is None:
         target_date = date.today()
@@ -105,7 +111,8 @@ async def get_daily_payment_stats(
 async def get_monthly_payment_stats(
     year: int,
     month: int,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     statement = select(Payment)
     payments = session.exec(statement).all()
@@ -127,7 +134,8 @@ async def get_monthly_payment_stats(
 @router.post("/", response_model=PaymentRead)
 async def create_payment(
     payment: PaymentCreate,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     db_payment = Payment(**payment.model_dump())
     session.add(db_payment)
@@ -198,7 +206,8 @@ async def create_payment(
     )
 async def reverse_payment(
     payment_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     payment = session.get(Payment, payment_id)
     if not payment:

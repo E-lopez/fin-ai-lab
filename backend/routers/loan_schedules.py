@@ -10,10 +10,12 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 
 from dependencies.db_client import get_session
+from dependencies.auth import get_current_user
 from schemas.Loans import Loan
 from schemas.Loan_schedule import LoanSchedule, LoanScheduleRead, LoanScheduleCreate
 from schemas.Payment_allocations import PaymentAllocation
 from schemas.Payments import Payment
+from schemas.Users import User
 from functions.schedule_utils import scheduler
 from functions.date_utils import calculate_days_late
 from functions.financial_utils import calculate_remaining_balance, calculate_remaining_interest, calculate_remaining_fees
@@ -27,7 +29,8 @@ router = APIRouter(
 @router.get("/loan/{loan_id}", response_model=list[LoanScheduleRead])
 async def get_loan_schedule_by_loan_id(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     statement = select(LoanSchedule).where(LoanSchedule.loan_id == loan_id).order_by(LoanSchedule.period)
     results = session.exec(statement).all()
@@ -40,7 +43,8 @@ async def get_loan_schedule_by_loan_id(
         responses={404: {"description": HTTP_MESSAGES["SCHEDULES"]["SCHEDULE_NOT_FOUND"]}})
 async def get_loan_schedule_by_id(
     schedule_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     schedule = session.get(LoanSchedule, schedule_id)
     if not schedule:
@@ -50,7 +54,8 @@ async def get_loan_schedule_by_id(
 @router.get("/loan/{loan_id}/late-days")
 async def get_scheduled_payment_late_days(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     today = date.today()
     
@@ -93,7 +98,8 @@ async def get_scheduled_payment_late_days(
 @router.get("/loan/{loan_id}/next-scheduled-amounts")
 async def get_next_scheduled_amounts(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     today = date.today()
     
@@ -139,7 +145,8 @@ async def get_next_scheduled_amounts(
 @router.get("/loan/{loan_id}/payment-progress")
 async def get_payment_progress(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     schedule_statement = select(LoanSchedule).where(LoanSchedule.loan_id == loan_id)
     schedules = session.exec(schedule_statement).all()
@@ -179,7 +186,8 @@ async def get_payment_progress(
         })
 async def create_loan_schedule(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     loan = await get_loan_by_id(loan_id, session)
     print(f"Generating schedule for loan: {loan}")
@@ -205,6 +213,7 @@ async def create_loan_schedule(
         })
 async def create_loan_schedule(
     loan: Loan,
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     schedule = scheduler(loan.amortization_type)(loan)
 
@@ -221,7 +230,8 @@ async def create_loan_schedule(
 async def create_late_fee(
     loan_id: UUID,
     schedule_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     schedule = session.get(LoanSchedule, schedule_id)
     if not schedule or schedule.loan_id != loan_id:

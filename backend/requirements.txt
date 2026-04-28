@@ -5,3 +5,10 @@ psycopg2-binary
 pytest
 pytest-cov
 httpx
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pyjwt
+pwdlib[argon2]
+python-dotenv
+bcrypt

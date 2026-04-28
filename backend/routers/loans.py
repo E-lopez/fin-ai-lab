@@ -7,12 +7,14 @@ from decimal import Decimal
 from datetime import date
 
 from dependencies.db_client import get_session
+from dependencies.auth import get_current_user
 from schemas.Borrowers import Borrower
 from schemas.Loans import Loan, LoanRead, LoanCreate
 from schemas.Loan_schedule import LoanSchedule
 from schemas.Payments import Payment
 from schemas.Payment_allocations import PaymentAllocation
 from schemas.dto.LoanSummary import LoanSummary
+from schemas.Users import User
 from functions.financial_utils import calculate_total_balance, calculate_remaining_balance, calculate_remaining_interest, calculate_remaining_fees
 
 router = APIRouter(
@@ -25,6 +27,7 @@ router = APIRouter(
 @router.get("/", response_model=list[LoanRead])
 async def get_loans(
     session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
     borrower_id: Optional[UUID] = None,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100
@@ -39,7 +42,8 @@ async def get_loans(
 @router.get("/status/{status}", response_model=list[LoanRead])
 async def get_loans_by_status(
     status: str,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     statement = select(Loan).where(Loan.status == status)
     results = session.exec(statement).all()
@@ -49,6 +53,7 @@ async def get_loans_by_status(
 @router.get("/loans-summary")
 async def get_loans_summary(
     session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100
 ):
@@ -158,7 +163,8 @@ async def get_loans_summary(
         responses={404: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"]}})
 async def get_loan_by_id(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     loan = session.get(Loan, loan_id)
     if not loan:
@@ -171,7 +177,8 @@ async def get_loan_by_id(
         responses={404: {"description": HTTP_MESSAGES["LOANS"]["LOAN_NOT_FOUND"]}})
 async def calculate_loan_balance(
     loan_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     loan = session.get(Loan, loan_id)
     if not loan:
@@ -212,7 +219,8 @@ async def calculate_loan_balance(
 @router.post("/", response_model=LoanRead)
 async def create_loan(
     loan: LoanCreate,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     db_loan = Loan(**loan.model_dump())
     db_loan.status = "pending"
@@ -234,6 +242,7 @@ async def create_loan(
 async def disburse_loan(
     loan_id: UUID,
     session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
     disbursement_date: date = None
 ):
     loan = session.get(Loan, loan_id)

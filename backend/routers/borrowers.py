@@ -7,10 +7,12 @@ from decimal import Decimal
 from datetime import date
 
 from dependencies.db_client import get_session
+from dependencies.auth import get_current_user
 from schemas.Borrowers import Borrower, BorrowerRead, BorrowerCreate
 from schemas.Loans import Loan
 from schemas.Loan_schedule import LoanSchedule
 from schemas.Payment_allocations import PaymentAllocation
+from schemas.Users import User
 from functions.financial_utils import calculate_remaining_balance, calculate_remaining_interest, calculate_remaining_fees, calculate_total_balance
 
 router = APIRouter(
@@ -22,6 +24,7 @@ router = APIRouter(
 @router.get("/", response_model=list[BorrowerRead])
 async def read_borrowers(
     session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
     ):
@@ -33,6 +36,7 @@ async def read_borrowers(
 @router.get("/search", response_model=list[BorrowerRead])
 async def search_borrowers(
     session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
     query: Annotated[str, Query(..., min_length=1)],
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
@@ -58,7 +62,8 @@ async def search_borrowers(
         })
 async def get_borrower_summary(
     borrower_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     borrower = session.get(Borrower, borrower_id)
     if not borrower:
@@ -111,7 +116,8 @@ async def get_borrower_summary(
 )
 async def get_next_payment(
     borrower_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     # 1. Fetch all active schedules for this borrower
     statement = (
@@ -190,7 +196,8 @@ async def get_next_payment(
     )
 async def get_borrower_by_id(
     borrower_id: UUID,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     borrower = session.get(Borrower, borrower_id)
     if not borrower:
@@ -205,7 +212,8 @@ async def get_borrower_by_id(
 async def update_borrower(
     borrower_id: UUID,
     borrower_update: dict,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     borrower = session.get(Borrower, borrower_id)
     if not borrower:
@@ -224,7 +232,8 @@ async def update_borrower(
 @router.post("/", response_model=BorrowerRead)
 async def create_borrower(
     borrower: BorrowerCreate,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     db_borrower = Borrower(**borrower.model_dump())
     session.add(db_borrower)

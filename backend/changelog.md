@@ -190,3 +190,131 @@
 - In-memory database for fast, isolated tests
 - Automatic dependency override for test client
 - Clean state for each test run
+
+
+## Authentication System Implementation
+
+### Schemas Created
+
+#### users.py
+- UserBase, User, UserCreate, UserRead models
+- UserLogin, PasswordChange, Token models
+- Fields: username, hashed_password, role, is_active
+- Unique constraint on username
+
+### Auth Utilities
+
+#### auth_utils.py
+- hash_password() - Hash passwords using bcrypt
+- verify_password() - Verify password against hash
+- create_access_token() - Generate JWT tokens
+- decode_access_token() - Decode and validate JWT tokens
+- Uses HS256 algorithm with configurable secret key
+- 30-minute token expiration by default
+
+### Auth Dependencies
+
+#### auth.py
+- get_current_user() - Extract and validate user from JWT token
+- get_current_admin_user() - Verify user has admin role
+- HTTPBearer security scheme
+- Validates token, checks user exists and is active
+
+### Auth Endpoints
+
+#### routers/auth.py
+- GET /auth/health - Public health check endpoint (no auth required)
+- POST /auth/register - Create new user with username, password, and role
+- POST /auth/login - Authenticate user and return JWT token
+- POST /auth/change-password - Change password for authenticated user
+- GET /auth/me - Get current authenticated user info
+
+### Protected Routes
+
+All existing endpoints now require authentication:
+- All borrowers endpoints
+- All loans endpoints
+- All loan_schedules endpoints
+- All payments endpoints
+- All payment_allocations endpoints
+
+Only public endpoint: GET /auth/health
+
+### Database Migration
+
+Created 002_users_table.sql:
+- users table with UUID primary key
+- username (unique), hashed_password, role, is_active fields
+- Indexes on username and role
+- Default role: "user"
+
+### Security Features
+
+- Passwords hashed with bcrypt
+- JWT token-based authentication
+- Bearer token scheme
+- Role-based access control ready
+- Active user validation
+- Token expiration handling
+- Secure password change with old password verification
+
+### Dependencies Added
+
+- python-jose[cryptography] - JWT handling
+- passlib[bcrypt] - Password hashing
+- python-multipart - Form data support
+
+
+## All Routes Protected
+
+### Protected Routers
+All endpoints in the following routers now require authentication:
+- borrowers.py - All 8 endpoints protected
+- loans.py - All 8 endpoints protected
+- loan_schedules.py - All 9 endpoints protected
+- payments.py - All 8 endpoints protected
+- payment_allocations.py - All 2 endpoints protected
+- aggregations.py - All 1 endpoint protected
+
+### Public Endpoints
+Only the following endpoints remain public (no authentication required):
+- GET /auth/health - Health check endpoint
+- POST /auth/register - User registration
+- POST /auth/login - User login
+
+### Authentication Flow
+1. User registers via POST /auth/register
+2. User logs in via POST /auth/login to receive JWT token
+3. User includes JWT token in Authorization header as "Bearer {token}"
+4. All other endpoints validate token and extract user info
+5. Invalid/expired tokens return 401 Unauthorized
+
+### Implementation Details
+- Added get_current_user dependency to all protected endpoints
+- User object available in all protected route handlers
+- Ready for role-based access control (admin vs user)
+- Consistent authentication across entire API
+
+
+## Automatic Database Table Creation
+
+### Startup Event
+Added FastAPI startup event to automatically create all database tables if they don't exist:
+- users table
+- borrowers table
+- loans table
+- loan_schedule table
+- payments table
+- payment_allocations table
+
+### Implementation
+- create_db_and_tables() function imports all table models
+- SQLModel.metadata.create_all() creates missing tables
+- Runs automatically on application startup
+- Safe to run multiple times (only creates if not exists)
+
+### Benefits
+- No manual migration needed for initial setup
+- Users table created automatically
+- All tables created in correct order with foreign keys
+- Development and testing simplified

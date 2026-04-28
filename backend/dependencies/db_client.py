@@ -24,7 +24,7 @@ def get_engine():
     engine = create_engine(url_with_password)
     return engine
 
-def create_db_and_tables():
+def create_db_and_tables():    
     SQLModel.metadata.create_all(get_engine())
 
 def get_session():
