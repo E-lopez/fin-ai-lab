@@ -25,7 +25,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     )
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    print(f"SECRETS: SECRET_KEY='{SECRET_KEY}', ALGORITHM='{ALGORITHM}'")
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
