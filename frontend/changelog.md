@@ -11,3 +11,15 @@
 
 - `src/utils/functions/currency.ts`: Added `filterLoans` (filters by status), `sumLoansField` (generic column sum), and `calcProfitability` (ratio + net from disbursed/repaid).
 - `src/routes/overview/components/OverviewHeader.tsx`: Replaced static `model` array with computed cards derived from `loansState.loansOverview` filtered by the active filter. Disbursed, repaid, and outstanding display as currency via `toCurrency`; profitability shows `ratio%` / `net` currency. Removed unused `status` state and `MainApiService` import.
+
+## Auth service integration
+
+- `src/models/dto/auth.ts`: Added `UserLogin`, `UserCreate`, `UserRead`, `Token`, and `PasswordChange` interfaces matching the API schemas from `/auth/*` routes.
+- `src/services/auth/authApiConnector.ts`: New connector class with `login`, `register`, `me`, and `changePassword` methods. Auth-protected endpoints pass `Authorization: Bearer {token}` directly.
+- `src/services/auth/authService.ts`: Facade over `AuthApiConnector`, exported as singleton `AuthService`.
+- `src/services/mainApi/mainApiConnector.ts`: `request()` now reads `globalThis.authToken` and injects `Authorization: Bearer {token}` header into every API call when a token is present.
+- `src/components/modalComponent/loginModal.tsx`: Replaced mock auth with real `AuthService.login` call. On success, stores `access_token` in `globalThis.authToken`, dispatches `SAVE_TOKEN` to the token store, and closes the modal. Displays an inline error message on failure.
+
+## Login/Logout toggle in MainBar
+
+- `src/components/navigation/MainBar.tsx`: Reads `userAuthenticated` from the token store. When `true`, renders a Logout button that clears `globalThis.authToken` and dispatches `RESET_TOKEN`. When `false`, renders the Login button that opens the login modal.

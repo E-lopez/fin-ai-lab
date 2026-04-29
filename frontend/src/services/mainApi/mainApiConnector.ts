@@ -16,12 +16,14 @@ export default class MainApiConnector {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${MainApiConnector.baseUrl}${endpoint}`;
     
+    const token = (globalThis as any).authToken;
     const config = {
       mode: 'cors' as RequestMode,
       ...options,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
     };
