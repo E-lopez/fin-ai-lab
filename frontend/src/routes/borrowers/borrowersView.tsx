@@ -12,9 +12,7 @@ const BorrowersView = () => {
   const [loansState, loansDispatch] = useLoansState();
   const modalDispatch = useModalDispatch();
 
-
   const handleRowAction = (paymentId: string) => {
-
     modalDispatch({
       type: 'SHOW_MODAL',
       content: <AllocationModal paymentId={paymentId} />,
@@ -33,7 +31,6 @@ const BorrowersView = () => {
           type: "STORE_BORROWERS",
           borrowers: data,
         })
-        console.log("Borrowers data:", data);
         setStatus('idle');
       })
       .catch((error: any) => {

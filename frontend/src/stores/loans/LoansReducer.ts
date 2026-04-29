@@ -19,7 +19,6 @@ export default function surveyReducer(
     stats?: statsType,
   }
 ) {
-  console.log("INCOMING", action);
   switch(action.type) {
     case 'STORE_LOANS_OVERVIEW': {
       return {

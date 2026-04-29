@@ -5,8 +5,6 @@ const LoanStats = () => {
   const [ loansState ] = useLoansState();
   const { profit, yield_rate, value, total_cost } = loansState.stats || {};
 
-  console.log("Mounting LoanStats", loansState);
-
   return(
     <div className="stats u-center-v">
       <h1 className="paragraph">Loan Stats</h1>
