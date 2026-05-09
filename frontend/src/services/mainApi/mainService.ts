@@ -48,6 +48,10 @@ class MainApiServiceFacade {
     return this.connector.getNextPayment(borrowerId);
   }
 
+  getScheduleByLoanId(loan_id: string) {
+    return this.connector.getScheduleByLoanId(loan_id);
+  }
+
 }
 
 export const MainApiService = new MainApiServiceFacade(AmortizationApiConnector);

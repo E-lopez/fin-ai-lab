@@ -1,47 +1,59 @@
-import { useEffect, useState } from "react";
-import { MainApiService } from "@/services/mainApi/mainService";
-import { monthYearFormat } from "@/utils/functions/dataTime";
 import { PaymentAllocation } from "@/models/dto/paymentAllocation";
-import LoadingIndicator from "@/components/loaderComponent/LoaderComponent";
+import { LoanScheduleRead } from "@/models/dto/loanSchedule";
 import { toCurrency } from "@/utils/functions/currency";
+import { monthYearFormat } from "@/utils/functions/dataTime";
 
-const ErrorView = () => (
-  <div className="u-center-v">
-    <h1 className="paragraph paragraph--lg u-center-text blue">Error retrieving payment allocation. <br/> Please try again.</h1>
-  </div>
-);
-
-const AllocationModal = ({ paymentId }: {paymentId: string}) => {
-  const [status, setStatus] = useState('loading');
-  const [allocation, setAllocation] = useState<PaymentAllocation[] | []>([]);
-
-  useEffect(() => {
-    MainApiService.getPaymentAllocation(paymentId)
-      .then((data: PaymentAllocation[]) => {
-        setAllocation(data);
-        setStatus('idle');
-      })
-      .catch((error: any) => {
-        console.error("ERROR FETCHING SUMMARY:", error);
-        setStatus('error');
-      });
-  }, [paymentId]);
-
-  if(status === 'loading') return <LoadingIndicator />;
-  if(status === 'error') return <ErrorView />;
-  return(
-    <div className="u-center-v u-overflow-y">
-      {allocation.map((item, index) => (
-        <div key={item.id} className="dataBox">
-          <p className="paragraph bold blue">Allocation {index + 1}</p>
-          <p className="paragraph"><span className="bold">principal:</span> {toCurrency(item.allocated_principal) || 0}</p>
-          <p className="paragraph"><span className="bold">interest:</span> {toCurrency(item.allocated_interest) || 0}</p>
-          <p className="paragraph"><span className="bold">fees:</span> {toCurrency(item.allocated_fees) || 0}</p>
-          <p className="paragraph"><span className="bold">created at:</span> {monthYearFormat(item.created_at) || 'N/A'}</p>
-        </div>
-      ))}
-    </div>
-  )
+interface Props {
+  allocations: PaymentAllocation[];
+  scheduleMap: Map<string, LoanScheduleRead>;
+  paymentDate: string;
+  paidAmount: string;
 }
+
+const AllocationModal = ({ allocations, scheduleMap, paymentDate, paidAmount }: Props) => {
+  const totalAllocated = allocations.reduce(
+    (acc, a) => ({
+      principal: acc.principal + Number(a.allocated_principal),
+      interest: acc.interest + Number(a.allocated_interest),
+      fees: acc.fees + Number(a.allocated_fees),
+    }),
+    { principal: 0, interest: 0, fees: 0 }
+  );
+
+  return (
+    <div className="u-overflow-y">
+      <div className="dataBox">
+        <p className="paragraph bold blue">Payment summary</p>
+        <p className="paragraph"><span className="bold">date:</span> {monthYearFormat(paymentDate)}</p>
+        <p className="paragraph"><span className="bold">total paid:</span> {toCurrency(paidAmount)}</p>
+        <p className="paragraph"><span className="bold">total principal:</span> {toCurrency(totalAllocated.principal)}</p>
+        <p className="paragraph"><span className="bold">total interest:</span> {toCurrency(totalAllocated.interest)}</p>
+        <p className="paragraph"><span className="bold">total fees:</span> {toCurrency(totalAllocated.fees)}</p>
+      </div>
+
+      {allocations.map((item, index) => {
+        const scheduleRow = scheduleMap.get(item.schedule_id);
+        return (
+          <div key={item.id} className="dataBox">
+            <p className="paragraph bold blue">Allocation {index + 1}</p>
+            {scheduleRow && (
+              <p className="paragraph"><span className="bold">period:</span> {scheduleRow.period} — due {monthYearFormat(scheduleRow.due_date)}</p>
+            )}
+            <p className="paragraph"><span className="bold">principal:</span> {toCurrency(item.allocated_principal)}</p>
+            <p className="paragraph"><span className="bold">interest:</span> {toCurrency(item.allocated_interest)}</p>
+            <p className="paragraph"><span className="bold">fees:</span> {toCurrency(item.allocated_fees)}</p>
+            {scheduleRow && (
+              <>
+                <p className="paragraph"><span className="bold">scheduled principal:</span> {toCurrency(scheduleRow.scheduled_principal)}</p>
+                <p className="paragraph"><span className="bold">scheduled interest:</span> {toCurrency(scheduleRow.scheduled_interest)}</p>
+                <p className="paragraph"><span className="bold">scheduled fees:</span> {toCurrency(scheduleRow.scheduled_fees)}</p>
+              </>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default AllocationModal;

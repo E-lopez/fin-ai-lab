@@ -112,7 +112,10 @@ const LoanSummaryTable = () => {
                   <i className={`${loan.is_overdue ? "red" : "dark-green"} u-ml-4 bi-circle-fill`}></i>
                 </td>
                 <td>
-                  <Link to='/loan-payments' state={{ loanId: loan.id }} className="blue">
+                  <Link 
+                    to='/loan-payments'
+                    state={{ loanId: loan.id, borrowerName: loan.borrower_name }} className="blue"
+                  >
                     {loan.borrower_name}
                   </Link>
                 </td>

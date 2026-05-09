@@ -9,6 +9,7 @@ import { FullLoanOnboardingRequest } from "@/models/dto/fullLoanOnboardingReques
 import { Payment } from "@/models/dto/payment";
 import { PaymentAllocation } from "@/models/dto/paymentAllocation";
 import { NextPaymentType } from "@/models/dto/nextPaymentType";
+import { LoanScheduleRead } from "@/models/dto/loanSchedule";
 
 export default class MainApiConnector {
   static readonly baseUrl: string = import.meta.env.VITE_API_URL;
@@ -131,5 +132,9 @@ export default class MainApiConnector {
 
   async getNextPayment(borrowerId: string): Promise<NextPaymentType | null> {
     return this.request(`/borrowers/${borrowerId}/next-payment`);
+  }
+
+  async getScheduleByLoanId(loan_id: string): Promise<LoanScheduleRead[]> {
+    return this.request(`/loan_schedules/loan/${loan_id}`);
   }
 }

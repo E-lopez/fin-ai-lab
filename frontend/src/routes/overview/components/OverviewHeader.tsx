@@ -35,11 +35,13 @@ const OverviewHeader = () => {
       <div className="overview-header__filters">
         <CustomButton
           label="Active"
+          type="button"
           cssModifier={`${filter === 'active' ? 'overview-filters--active' : 'overview-filters'}`}
           method={() => setFilter('active')}
         />
         <CustomButton
           label="All"
+          type="button"
           cssModifier={`${filter === 'all' ? 'overview-filters--active' : 'overview-filters'}`}
           method={() => setFilter('all')}
         />

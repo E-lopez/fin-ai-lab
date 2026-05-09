@@ -42,3 +42,9 @@ export function getTodayDate() {
   const day = String(today.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export function isSameMonthAndYear(date1: string, date2: string): boolean {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+}

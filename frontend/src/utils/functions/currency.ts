@@ -34,3 +34,11 @@ export const calcProfitability = (disbursed: number, repaid: number) => ({
   ratio: disbursed > 0 ? repaid / disbursed : 0,
   net: repaid - disbursed,
 });
+
+export const calcRunningBalances = (initialBalance: number, principalRepayments: number[]): number[] => {
+  let balance = initialBalance;
+  return principalRepayments.map((principal) => {
+    balance -= principal;
+    return balance;
+  });
+};
