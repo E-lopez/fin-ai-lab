@@ -1,4 +1,5 @@
 from typing import Annotated, Optional
+from functions.payment_utils import get_next_payment_for_borrower
 from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlmodel import Session, select, or_, func
@@ -119,74 +120,7 @@ async def get_next_payment(
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
-    # 1. Fetch all active schedules for this borrower
-    statement = (
-        select(LoanSchedule)
-        .join(Loan)
-        .where(
-            Loan.borrower_id == borrower_id,
-            Loan.status == "active"
-        )
-        .order_by(LoanSchedule.due_date.asc(), LoanSchedule.period.asc())
-    )
-    
-    all_schedules = session.exec(statement).all()
-    
-    total_catch_up_amount = 0
-    oldest_unpaid_date = None
-    today = date.today()
-
-    for schedule in all_schedules:
-        # Get total paid for this specific period
-        paid_data = session.exec(
-            select(
-                func.sum(
-                    PaymentAllocation.allocated_principal + 
-                    PaymentAllocation.allocated_interest + 
-                    PaymentAllocation.allocated_fees
-                )
-            ).where(PaymentAllocation.schedule_id == schedule.id)
-        ).first() or 0
-        
-        total_scheduled = (schedule.scheduled_principal + 
-                           schedule.scheduled_interest + 
-                           schedule.scheduled_fees)
-        
-        print(f"Schedule {schedule.id} due {schedule.due_date}: scheduled={total_scheduled}, paid={paid_data}")
-        
-        balance_for_period = total_scheduled - paid_data
-
-        if balance_for_period <= 0:
-            continue
-
-        # If this period is in the past or is today, add it to the total due
-        if schedule.due_date <= today:
-            total_catch_up_amount += balance_for_period
-            # Track the oldest date to show the user when they started falling behind
-            if oldest_unpaid_date is None:
-                oldest_unpaid_date = schedule.due_date
-        else:
-            # This is the first TRULY future payment. 
-            # If we have no overdue amounts, we return just this one.
-            # If we DO have overdue amounts, we usually stop here or add it depending on your policy.
-            if total_catch_up_amount == 0:
-                return {
-                    "amount_due": float(balance_for_period),
-                    "due_date": schedule.due_date,
-                    "status": "upcoming",
-                    "is_catch_up_balance": False
-                }
-            break # We found all past-due amounts, stop looking at the future.
-
-    if total_catch_up_amount > 0:
-        return {
-            "amount_due": float(total_catch_up_amount),
-            "due_date": oldest_unpaid_date, # Show them the oldest date they owe from
-            "status": "overdue",
-            "is_catch_up_balance": True
-        }
-            
-    return {"message": "All loans are fully paid or no active loans found."}
+    return get_next_payment_for_borrower(borrower_id, session)
 
 
 @router.get(

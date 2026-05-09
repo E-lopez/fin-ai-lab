@@ -1,24 +1,33 @@
+from decimal import Decimal
 from typing import Annotated, Optional
-from constants.HTTP_messages import HTTP_MESSAGES
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from uuid import UUID
-from decimal import Decimal
-from datetime import date, datetime
+from datetime import date
 
 from dependencies.db_client import get_session
 from dependencies.auth import get_current_user
+
+from schemas.Borrowers import Borrower
+from schemas.Loans import Loan
 from schemas.Payments import Payment, PaymentRead, PaymentCreate
 from schemas.Payment_allocations import PaymentAllocation, PaymentAllocationCreate
 from schemas.Loan_schedule import LoanSchedule
 from schemas.Users import User
+
 from functions.date_utils import calculate_days_until
+from functions.email_utils import compose_success_email, send_email
+from functions.payment_utils import allocate_payment_to_schedule, get_next_payment_for_borrower
+
+from constants.HTTP_messages import HTTP_MESSAGES
+
 
 router = APIRouter(
   prefix="/payments",
   tags=["payments"],
   responses={404: {"description": "Not found"}},
 )
+
 
 @router.get("/loan/{loan_id}", response_model=list[PaymentRead])
 async def get_payments_by_loan_id(
@@ -29,6 +38,7 @@ async def get_payments_by_loan_id(
     statement = select(Payment).where(Payment.loan_id == loan_id).order_by(Payment.payment_date)
     results = session.exec(statement).all()
     return results
+
 
 @router.get("/loan/{loan_id}/next-due-date")
 async def get_next_payment_due_date(
@@ -56,6 +66,7 @@ async def get_next_payment_due_date(
         "loan_id": loan_id,
         "due_date": next_schedule.due_date
     }
+
 
 @router.get("/loan/{loan_id}/days-to-due-date")
 async def get_days_to_payment_due_date(
@@ -86,6 +97,7 @@ async def get_days_to_payment_due_date(
         "due_date": next_schedule.due_date,
         "days_to_due_date": days_until_due
     }
+
 
 @router.get("/stats/daily")
 async def get_daily_payment_stats(
@@ -131,6 +143,7 @@ async def get_monthly_payment_stats(
         "number_of_payments": len(monthly_payments)
     }
 
+
 @router.post("/", response_model=PaymentRead)
 async def create_payment(
     payment: PaymentCreate,
@@ -143,59 +156,44 @@ async def create_payment(
     session.refresh(db_payment)
     
     remaining_amount = payment.paid_amount
-    
-    schedule_statement = select(LoanSchedule).where(
-        LoanSchedule.loan_id == payment.loan_id
-    ).order_by(LoanSchedule.due_date)
-    
-    schedules = session.exec(schedule_statement).all()
-    
+    today = date.today()
+    total_balance = Decimal(0)
+    next_due_date = None
+
+    schedules = session.exec(
+        select(LoanSchedule).where(LoanSchedule.loan_id == payment.loan_id).order_by(LoanSchedule.due_date)
+    ).all()
+
     for schedule in schedules:
-        if remaining_amount <= 0:
-            break
-        
-        allocation_statement = select(PaymentAllocation).where(
-            PaymentAllocation.schedule_id == schedule.id
+        remaining_amount, period_remaining = allocate_payment_to_schedule(
+            db_payment.id, schedule, remaining_amount, session
         )
-        existing_allocations = session.exec(allocation_statement).all()
-        
-        allocated_interest = sum(a.allocated_interest for a in existing_allocations)
-        allocated_fees = sum(a.allocated_fees for a in existing_allocations)
-        allocated_principal = sum(a.allocated_principal for a in existing_allocations)
-        
-        remaining_interest = schedule.scheduled_interest - allocated_interest
-        remaining_fees = schedule.scheduled_fees - allocated_fees
-        remaining_principal = schedule.scheduled_principal - allocated_principal
-        
-        new_allocation = PaymentAllocation(
-            payment_id=db_payment.id,
-            schedule_id=schedule.id,
-            allocated_principal=Decimal(0),
-            allocated_interest=Decimal(0),
-            allocated_fees=Decimal(0)
-        )
-        
-        if remaining_interest > 0:
-            allocation_to_interest = min(remaining_amount, remaining_interest)
-            new_allocation.allocated_interest = allocation_to_interest
-            remaining_amount -= allocation_to_interest
-        
-        if remaining_amount > 0 and remaining_fees > 0:
-            allocation_to_fees = min(remaining_amount, remaining_fees)
-            new_allocation.allocated_fees = allocation_to_fees
-            remaining_amount -= allocation_to_fees
-        
-        if remaining_amount > 0 and remaining_principal > 0:
-            allocation_to_principal = min(remaining_amount, remaining_principal)
-            new_allocation.allocated_principal = allocation_to_principal
-            remaining_amount -= allocation_to_principal
-        
-        if new_allocation.allocated_interest > 0 or new_allocation.allocated_fees > 0 or new_allocation.allocated_principal > 0:
-            session.add(new_allocation)
-    
+        total_balance += period_remaining
+        if next_due_date is None and schedule.due_date >= today:
+            next_due_date = schedule.due_date
+
     session.commit()
+
+    loan = session.get(Loan, payment.loan_id)
+    borrower = session.get(Borrower, loan.borrower_id)
+    next_payment = get_next_payment_for_borrower(borrower.id, session)
+
+    print(f"next payment for borrower {borrower.name} is {next_payment}")
+    
+    template = compose_success_email(
+        borrower_name=borrower.name,
+        amount_due=payment.paid_amount,
+        total_balance=total_balance,
+        next_payment=next_payment["amount_due"] if next_payment else Decimal(0),
+        next_due_date=next_payment["due_date"] if next_payment else "N/A"
+    )
+
+    print(f"Sending payment confirmation email to {borrower.email} for payment of ${payment.paid_amount:,.2f} with remaining balance ${total_balance:,.2f} and next due date {next_due_date} next payment amount ${next_payment['amount_due'] if next_payment else 'N/A'}")
+
+    send_email(borrower.email, template['subject'], template['body'])
     
     return db_payment
+
 
 @router.delete(
         "/{payment_id}",

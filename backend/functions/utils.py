@@ -24,3 +24,9 @@ def get_doppler_secret(key, default=None):
     except Exception as e:
         logger.error(f"Error getting Doppler secret {key}: {e}")
         return default
+    
+
+def parse_name(name: str) -> str:
+    name = name.replace('_', ' ')
+    clean_name = ''.join(e for e in name if e.isalnum() or e.isspace())
+    return ' '.join(clean_name.split()).title()
