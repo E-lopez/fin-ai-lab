@@ -23,3 +23,20 @@
 ## Login/Logout toggle in MainBar
 
 - `src/components/navigation/MainBar.tsx`: Reads `userAuthenticated` from the token store. When `true`, renders a Logout button that clears `globalThis.authToken` and dispatches `RESET_TOKEN`. When `false`, renders the Login button that opens the login modal.
+
+## LoanPayments table refactor
+
+- `src/models/dto/loanSchedule.ts`: New `LoanScheduleRead` interface matching the `/loan_schedules/loan/{loan_id}` API schema.
+- `src/services/mainApi/mainApiConnector.ts`: Added `getScheduleByLoanId(loan_id)` calling `GET /loan_schedules/loan/{loan_id}`.
+- `src/services/mainApi/mainService.ts`: Exposed `getScheduleByLoanId` through the facade.
+- `src/routes/loanPayments/loanPayments.tsx`: Refactored to fetch payments and schedule in parallel via `Promise.all`, then fetch allocations per payment. Builds a `scheduleMap` keyed by schedule `id` to join scheduled amounts via `allocation.schedule_id`. Table now shows: sequential `#`, amount paid, allocations (principal / interest / fees), scheduled amount for that period, and payment date. Removed dependency on loans store — data is local to the route.
+
+## LoanPayments table column expansion
+
+- `src/utils/functions/currency.ts`: Added `calcRunningBalances(initialBalance, principalRepayments[])` — computes period-end balance by subtracting each principal repayment cumulatively from the loan's initial principal.
+- `src/routes/loanPayments/loanPayments.tsx`: Split allocations into individual columns (principal, interest, fees). Added balance column computed via `calcRunningBalances` seeded from the sum of all `scheduled_principal` values. Added due date column sourced from the matched `LoanScheduleRead.due_date`. Renamed "date" column to "payment date" for clarity.
+
+## AllocationModal full breakdown
+
+- `src/routes/loanPayments/components/AllocationModal.tsx`: Rewritten to accept pre-fetched `allocations`, `scheduleMap`, `paymentDate`, and `paidAmount` as props — no internal API call. Renders a payment summary header (total paid, total principal/interest/fees across all allocations) followed by one `dataBox` per allocation showing period number, due date, allocated amounts, and the corresponding scheduled amounts from the matched schedule row.
+- `src/routes/loanPayments/loanPayments.tsx`: Persists `scheduleMap` to component state. Added `handleRowAction` that opens `AllocationModal` via modal dispatch passing the row's allocations and scheduleMap. Added action button column to the table.
