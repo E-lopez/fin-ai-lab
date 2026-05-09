@@ -318,3 +318,217 @@ Added FastAPI startup event to automatically create all database tables if they 
 - Users table created automatically
 - All tables created in correct order with foreign keys
 - Development and testing simplified
+
+
+## Cron Job Implementation - Payment Reminders
+
+### Overview
+Implemented automated payment reminder system that sends emails to borrowers with upcoming or overdue payments.
+
+### Files Created
+
+#### functions/email_utils.py
+- send_email() - Generic email sending function using SMTP
+- Configurable via environment variables
+- Supports Gmail and other SMTP servers
+- Error handling and logging
+
+#### scripts/cron_jobs.py
+Main cron job script with following functions:
+
+**get_loans()**
+- No arguments
+- Returns list of all active loans from database
+- Uses SQLModel session to query Loan table
+
+**get_loan_next_payment(loan_id, session)**
+- Arguments: loan_id, database session
+- Queries loan, borrower, and schedule tables
+- Calculates next payment details:
+  - borrower_name
+  - email_address
+  - due_date
+  - amount_due (principal + interest + fees - allocations)
+  - days_to_due_date
+- Returns None if no upcoming payment found
+
+**compose_email(borrower_name, email_address, due_date, amount_due)**
+- Arguments: borrower details and payment info
+- Logic based on days overdue:
+  - Less than 30 days overdue: "Recordatorio de Pago"
+    - Body: "Tu pago por ${amount} vence el {date}"
+  - 30+ days overdue: "Recordatorio de Pago Vencido"
+    - Body: "Tu pago por ${amount} se encuentra en mora desde {date}. Se activará la cláusula aceleratoria a partir del día de hoy."
+- Sends email using email_utils.send_email()
+- Returns success/failure status
+
+**run_payment_reminder_cron()**
+- Main orchestration function
+- Fetches all active loans
+- For each loan:
+  - Gets next payment details
+  - Composes and sends appropriate email
+  - Logs results
+- Can be run manually or scheduled via cron
+
+### scripts/README.md
+- Documentation for cron job usage
+- Environment variables required
+- Email templates
+- Process flow
+- Cron scheduling examples
+
+### Design Principles Followed
+- Single responsibility: Each function has one clear purpose
+- Reusability: Uses existing financial_utils and date_utils functions
+- Clean code: No nested loops, clear variable names
+- Separation of concerns: Email logic separate from business logic
+- Error handling: Graceful failure with logging
+
+### Environment Variables Required
+- SMTP_SERVER (default: smtp.gmail.com)
+- SMTP_PORT (default: 587)
+- SMTP_USERNAME
+- SMTP_PASSWORD
+- FROM_EMAIL (optional)
+- DATABASE_URL
+- DATABASE_PASSWORD
+
+### Usage
+Manual execution:
+```bash
+python scripts/cron_jobs.py
+```
+
+Scheduled execution (crontab):
+```bash
+0 9 * * * cd /path/to/backend && python scripts/cron_jobs.py
+```
+
+### Features
+- Automatic detection of overdue payments
+- Different email templates based on overdue status
+- Formatted currency amounts
+- Spanish language emails
+- Comprehensive logging
+- Error handling for missing data or email failures
+
+
+## Cron Job Enhancement - Email Retry Logic
+
+### Update to scripts/cron_jobs.py
+Added retry mechanism to compose_email() function:
+- max_retries parameter (default: 3)
+- Attempts to send email up to 3 times before giving up
+- Logs each attempt with attempt number
+- Returns True on first successful send
+- Returns False only after all retries exhausted
+- Improves reliability for transient email sending failures
+
+### Benefits
+- Handles temporary network issues
+- Reduces false negatives from email sending
+- Provides detailed logging for troubleshooting
+- Configurable retry count via parameter
+
+
+## Cron Job Update - Enhanced Payment Information
+
+### Updated get_loan_next_payment()
+Now calculates and returns additional information:
+- **late_days**: Number of days late from the oldest missed payment (0 if not late)
+- **remaining_amount**: Total amount pending across all unpaid schedules
+- Iterates through all schedules (not just next one) to calculate totals
+- Tracks the oldest overdue payment to determine late days
+
+### Updated compose_email()
+Enhanced email formatting with three scenarios:
+
+**1. Late >= 30 days:**
+- Subject: "Recordatorio de Pago Vencido"
+- Shows: late days count, next payment amount, total remaining amount
+- Includes acceleration clause warning
+
+**2. Late 1-29 days:**
+- Subject: "Recordatorio de Pago Atrasado"
+- Shows: late days count, next payment amount, total remaining amount
+- Warning about additional charges
+
+**3. Not late (upcoming payment):**
+- Subject: "Recordatorio de Pago"
+- Shows: next payment amount, due date, days until due
+- Shows total remaining amount if different from next payment
+- Friendly reminder
+
+### Benefits
+- More accurate late payment tracking
+- Better visibility of total debt
+- Graduated email severity based on late days
+- Clearer information for borrowers
+- Improved payment collection communication
+
+
+## Cron Job Correction - Remaining Amount Definition
+
+### Updated get_loan_next_payment()
+Corrected `remaining_amount` calculation:
+- **Previous**: Total amount pending across all unpaid schedules
+- **Current**: Pending amount to be paid on the next due date only
+- Logic: Sums all schedule periods that share the same next due date
+- This represents the actual amount due on that specific date
+- More accurate for payment reminders focused on immediate obligations
+
+
+## Code Refactoring - Payment Calculation Reusability
+
+### Created functions/payment_utils.py
+New utility module with reusable payment calculation logic:
+
+**get_next_payment_for_loan(loan_id, session)**
+- Calculates next payment details for a specific loan
+- Returns: due_date, amount_due, remaining_amount, late_days, days_to_due_date
+- Handles all schedule periods and allocations
+- Determines late days from oldest unpaid schedule
+- Calculates remaining amount for next due date only
+
+### Updated routers/borrowers.py
+Refactored `get_next_payment()` endpoint:
+- Now uses `get_next_payment_for_loan()` utility
+- Iterates through all active loans for borrower
+- Returns earliest payment across all loans
+- Cleaner, more maintainable code
+- Consistent with cron job logic
+
+### Updated scripts/cron_jobs.py
+Refactored `get_loan_next_payment()` function:
+- Now uses `get_next_payment_for_loan()` utility
+- Adds borrower information to result
+- Eliminates code duplication
+- Single source of truth for payment calculations
+
+### Benefits
+- DRY principle: Single payment calculation logic
+- Easier to maintain and test
+- Consistent results across API and cron jobs
+- Reduced code complexity
+- Follows coding guidelines (reuse util functions)
+
+## 2024-01-XX - Fixed payment calculation discrepancy
+- Fixed bug in payment_utils.py where remaining_amount didn't account for acceleration clause (30+ days late)
+- Added total_remaining_amount calculation to track all unpaid amounts across all periods
+- When late_days >= 30, remaining_amount now shows total loan balance (acceleration clause activated)
+- When late_days < 30, remaining_amount shows only next due date amount
+- Ensures cron job and API endpoint return identical values for all scenarios
+
+## 2024-01-XX - Refactored email templates to HTML
+- Converted compose_reminder_email body from plain text to HTML format
+- Added inline CSS styling for better email presentation (font-family, line-height, color)
+- Used <strong> tags to emphasize amounts and dates
+- Improved readability and professional appearance of payment reminder emails
+
+## 2024-01-XX - Fixed cron job email errors
+- Fixed typo in payment_utils.py: changed "payed" to "paid" status
+- Fixed due_date returning 0 instead of None for fully paid loans
+- Added else clause in compose_reminder_email to return None when no template matches
+- Added None check in cron_jobs.py to skip emails when no template is generated
+- Prevents UnboundLocalError when subject/body variables are not defined

@@ -7,7 +7,8 @@ module.exports = {
       cwd: "./backend",
       watch: false,
       env: {
-        PYTHONPATH: "."
+        PYTHONPATH: ".",
+        PYTHONUNBUFFERED: "1"
       }
     },
     // {
