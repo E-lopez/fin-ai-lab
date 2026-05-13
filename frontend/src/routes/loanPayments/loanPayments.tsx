@@ -50,15 +50,23 @@ const LoanPayments = () => {
   }
 
   const groupByDueDate = (payments: Payment[], schedule: LoanScheduleRead[]) =>
-    schedule.map((s) => {
-      const amounts_payed = payments.filter((p) => isSameMonthAndYear(p.payment_date, s.due_date)).reduce((acc, p) => {
-        return acc + Number(p.paid_amount);
-      }, 0);
-      return {
-        ...s,
-        amounts_payed,
-      }
+  schedule.map((s) => {
+    const schedulePeriod = s.due_date.substring(0, 7); // "2026-03"
+
+    const filteredPayments = payments.filter((p) => {
+      const paymentPeriod = p.payment_date.substring(0, 7); 
+      return paymentPeriod === schedulePeriod;
     });
+
+    const amounts_payed = filteredPayments.reduce((acc, p) => {
+      return acc + Number(p.paid_amount);
+    }, 0);
+
+    return {
+      ...s,
+      amounts_payed,
+    };
+  });
 
   useEffect(() => {
     Promise.all([
