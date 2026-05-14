@@ -54,6 +54,10 @@ export default class MainApiConnector {
     return this.request('/loans/loans-summary');
   }
 
+  async findBorrower(payload: string): Promise<BorrowerResponse[]> {
+    return this.request(`/borrowers/search?query=${payload}`);
+  }
+
   async addPayment(payload: addPaymentRequest) {
     return this.request('/payments', {
       method: 'POST',
@@ -90,9 +94,16 @@ export default class MainApiConnector {
 
   async onboardingFullLoan(payload: FullLoanOnboardingRequest) {
     try {
-      // Create the Borrower
       console.log("Starting onboarding with payload:", payload);
-      const borrower = await this.createBorrower(payload.borrower);
+      let borrower;
+      // Check if borrower already exists
+      [ borrower ] = await this.findBorrower(payload.borrower.email);
+      console.log("Borrower Exists:", borrower, borrower.id);
+      // Create the Borrower
+      if (!borrower.id) {
+        console.log("Borrower Does not Exists:", borrower);
+        borrower = await this.createBorrower(payload.borrower);
+      }
 
       // Create the Loan 
       const loan = await this.createLoan({

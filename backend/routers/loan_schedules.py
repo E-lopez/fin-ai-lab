@@ -189,10 +189,10 @@ async def create_loan_schedule(
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
-    loan = await get_loan_by_id(loan_id, session)
-    print(f"Generating schedule for loan: {loan}")
-    schedule = scheduler(loan.amortization_type)(loan)
     try:
+        loan = loan = session.get(Loan, loan_id)
+        print(f"Generating schedule for loan: {loan}")
+        schedule = scheduler(loan.amortization_type)(loan)
         db_entries = [LoanSchedule(loan_id=loan_id, **entry) for entry in schedule]
         session.add_all(db_entries)
         session.commit()

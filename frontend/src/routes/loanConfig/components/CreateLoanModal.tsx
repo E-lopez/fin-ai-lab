@@ -25,7 +25,6 @@ const SaveLoanModal = () => {
   const [loansState, loansDispatch] = useLoansState();
 
   const createNewLoan = (payload: any) => {
-    console.log("CREATE NEW LOAN", loansState, payload);
     const { simulation: { data }} = loansState;
     const today = getTodayDate();
     setStatus('loading');
