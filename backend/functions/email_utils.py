@@ -60,6 +60,8 @@ def compose_reminder_email(borrower_name: str, amount_due: Decimal, due_date, st
     soft_due_date = status == "overdue" and days_to_due < 0 and days_to_due >= -30
     hard_due_date = status == "overdue" and days_to_due < -30
 
+    print(f"{borrower_name}, Status: {status}, Days to due: {days_to_due}, Soft due: {soft_due_date}, Hard due: {hard_due_date}")
+
     if hard_due_date:
         subject = "Recordatorio de Pago En Mora - Acción Requerida"
         content = f"""
@@ -107,7 +109,37 @@ def compose_reminder_email(borrower_name: str, amount_due: Decimal, due_date, st
     return {"subject": subject, "body": body}
 
 
+def finished_loan_email(borrower_name):
+    subject = "Préstamo Finalizado"
+    content = f"""
+        <div>
+            <h3>Estimado/a, {parse_name(borrower_name)},</h3>
+            <p>Tu préstamo ha sido completamente pagado, en breve recibirás tu paz y salvo.</p>
+            <p>Gracias por ser un cliente kredi y recuerda que siempre puedes contar con nostros.</p>
+            <p>¡Te deseamos éxito en tus proyectos!</p>
+        </div>
+    """
+
+    body = f"""
+    <html>
+        <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.5;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0; border-radius: 8px;">
+                {content}
+                <p>Saludos cordiales,</p>
+                <p><strong>Equipo de kredi latam Colombia</strong></p>
+                {FOOTER}
+            </div>
+        </body>
+    </html>
+    """
+
+    return {"subject": subject, "body": body}
+
+
 def compose_success_email(borrower_name: str, amount_due: Decimal, total_balance: Decimal, next_payment: Decimal, next_due_date: str):
+    if total_balance == 0:
+        return finished_loan_email(borrower_name)
+    
     subject = "Pago exitoso"
     content = f"""
     <div>

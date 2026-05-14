@@ -119,6 +119,7 @@ async def get_daily_payment_stats(
         "number_of_payments": len(payments)
     }
 
+
 @router.get("/stats/monthly")
 async def get_monthly_payment_stats(
     year: int,
@@ -178,8 +179,6 @@ async def create_payment(
     borrower = session.get(Borrower, loan.borrower_id)
     next_payment = get_next_payment_for_borrower(borrower.id, session)
 
-    print(f"next payment for borrower {borrower.name} is {next_payment}")
-    
     template = compose_success_email(
         borrower_name=borrower.name,
         amount_due=payment.paid_amount,
