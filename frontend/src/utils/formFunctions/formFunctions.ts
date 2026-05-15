@@ -9,13 +9,14 @@ const textField = (val: string) => {
 }
 
 const numericField = (val: string) => {
-  const regex: RegExp = /^\d{4,10}$/;
+  const regex: RegExp = /^\d{3,10}$/;
   return regex.test(val);
 }
 
 const amount = (value: string, max: string, min: string) => {
   const isNumeric = numericField(value)
   const isAllowed = Number(value) >= Number(min) && Number(value) <= Number(max)
+  console.log("VALIDATION", isNumeric, isAllowed, value, typeof value, max, min);
   return isNumeric && isAllowed;
 }
 

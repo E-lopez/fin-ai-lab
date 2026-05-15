@@ -107,7 +107,7 @@ const LoanSummaryTable = () => {
           </thead>
           <tbody>
             {filtered.map((loan: LoanSummary) => (
-              <tr key={loan.id} >
+              <tr key={loan.id} className="overview-table__row">
                 <td>
                   <i className={`${loan.is_overdue ? "red" : "dark-green"} u-ml-4 bi-circle-fill`}></i>
                 </td>

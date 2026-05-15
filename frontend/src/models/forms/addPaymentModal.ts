@@ -1,7 +1,7 @@
 const addPayment = {
   amount: {
     type: 'NUMERIC',
-    min: 1000,
+    min: 100,
     max: 3000000,
     required: true,
     pattern: '[0-9]{6}',

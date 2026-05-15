@@ -47,6 +47,10 @@
     font-family: $button-label
   }
 
+  &__row:hover {
+    background-color: rgba($pale-green, .2);
+  }
+
   th,
   td {
     border: none;
@@ -71,6 +75,9 @@
 
   tbody > tr:nth-of-type(even) {
     background-color: rgba($pale-blue, .2);
+    &:hover {
+      background-color: rgba($pale-green, .2);
+    }
   }
 
   &__row-buttons {

@@ -6,7 +6,6 @@ export const validationFeedback = (fieldName: string) => {
     case 'files': return 'Sube únicamente PDF o imágenes. No debe faltar ningún archivo.'
     case 'email': return 'Ingresa tu correo de esta forma: ejemplo@gmail.com'
     case 'dateOfBirth': return '¡Debes ser mayor de edad!'
-    case 'amount': return 'Revisa el valor máximo de tu préstamo.'
     default: return 'Revisa este valor'
   }
 }
